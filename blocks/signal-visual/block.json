@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "tuifan/signal-visual",
+	"title": "Signal Visual",
+	"category": "tuifan",
+	"description": "Static lensed-shadow illustration enhanced with a local WebGL ray-bending composition.",
+	"keywords": [ "hero", "visual", "black hole", "webgl", "tuifan" ],
+	"textdomain": "tuifan",
+	"supports": {
+		"html": false,
+		"anchor": true,
+		"align": [ "wide" ],
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	},
+	"attributes": {
+		"label": {
+			"type": "string",
+			"default": "Accretion field"
+		},
+		"enableMotion": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"style": "file:./style.css",
+	"editorScript": "file:./index.js",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}

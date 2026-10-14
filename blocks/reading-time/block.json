@@ -1,0 +1,32 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "tuifan/reading-time",
+	"title": "Reading Time",
+	"category": "tuifan",
+	"description": "Computed reading time for the current post (200 words per minute).",
+	"keywords": [ "reading", "time", "minutes", "tuifan" ],
+	"textdomain": "tuifan",
+	"usesContext": [ "postId", "postType" ],
+	"supports": {
+		"html": false,
+		"anchor": true,
+		"color": {
+			"background": false,
+			"text": true,
+			"link": false
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true,
+			"fontWeight": true,
+			"letterSpacing": true
+		}
+	},
+	"style": "file:./style.css",
+	"editorScript": "file:./index.js",
+	"render": "file:./render.php"
+}

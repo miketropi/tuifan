@@ -1,0 +1,31 @@
+{
+	"name": "tuifan-theme",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"description": "Build pipeline for the Tuifan child theme (Gutenberg blocks + site script).",
+	"scripts": {
+		"build": "node ./scripts/build-blocks.mjs",
+		"watch": "node ./scripts/build-blocks.mjs --watch",
+		"typecheck": "tsc --noEmit"
+	},
+	"devDependencies": {
+		"@types/react": "^18.3.12",
+		"@types/react-dom": "^18.3.1",
+		"@types/three": "0.185.1",
+		"@types/wordpress__block-editor": "15.0.5",
+		"@types/wordpress__blocks": "15.10.2",
+		"@wordpress/block-editor": "15.16.0",
+		"@wordpress/blocks": "15.16.0",
+		"@wordpress/components": "32.5.0",
+		"@wordpress/element": "6.43.0",
+		"@wordpress/i18n": "6.16.0",
+		"@wordpress/server-side-render": "6.19.0",
+		"esbuild": "0.25.0",
+		"glob": "13.0.6",
+		"react": "18.3.1",
+		"react-dom": "18.3.1",
+		"three": "0.185.1",
+		"typescript": "5.8.2"
+	}
+}

@@ -1,0 +1,135 @@
+/**
+ * tuifan/entry-list — numbered terminal rows.
+ */
+.tuifan-entries {
+	counter-reset: tuifan-entry 0;
+}
+
+.tuifan-entry {
+	border: 1px solid var(--wp--preset--color--border);
+	border-top: 0;
+	counter-increment: tuifan-entry;
+	display: grid;
+	gap: 24px;
+	grid-template-columns: minmax(100px, 160px) minmax(0, 1fr);
+	min-width: 0;
+	padding: 24px 24px 24px 58px;
+	position: relative;
+}
+
+.tuifan-entry:first-child {
+	border-top: 1px solid var(--wp--preset--color--border);
+}
+
+.tuifan-entry::before {
+	color: var(--wp--preset--color--paragraph);
+	content: counter(tuifan-entry, decimal-leading-zero);
+	font-family: inherit;
+	font-size: 11px;
+	left: 18px;
+	position: absolute;
+	top: 25px;
+}
+
+.tuifan-entry:hover,
+.tuifan-entry:focus-within {
+	background: var(--wp--preset--color--hover);
+}
+
+.tuifan-entry__media {
+	min-width: 0;
+}
+
+.tuifan-entry__media img {
+	aspect-ratio: 4 / 3;
+	display: block;
+	height: auto;
+	object-fit: cover;
+	width: 100%;
+}
+
+.tuifan-entry__copy {
+	min-width: 0;
+}
+
+.tuifan-entry__meta {
+	color: var(--wp--preset--color--paragraph);
+	display: flex;
+	flex-wrap: wrap;
+	font-size: 11px;
+	gap: 16px;
+	letter-spacing: 0.08em;
+}
+
+h3.tuifan-entry__title {
+	font-size: 20px;
+	line-height: 1.35;
+	margin: 12px 0 10px;
+}
+
+.tuifan-entry__title a {
+	color: inherit;
+	display: inline-block;
+	min-height: 24px;
+	text-decoration: none;
+}
+
+.tuifan-entry__title a:hover {
+	text-decoration: underline;
+	text-underline-offset: 5px;
+}
+
+p.tuifan-entry__excerpt {
+	color: var(--wp--preset--color--paragraph);
+	font-size: 13px;
+	line-height: 1.6;
+	margin: 0;
+	max-width: 65ch;
+}
+
+.tuifan-entry__bottom {
+	align-items: baseline;
+	color: var(--wp--preset--color--paragraph);
+	display: flex;
+	font-size: 11px;
+	gap: 16px;
+	justify-content: space-between;
+	margin-top: 18px;
+}
+
+.tuifan-entry__tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	min-width: 0;
+}
+
+.tuifan-entry__time {
+	flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+	.tuifan-entry {
+		gap: 14px;
+		grid-template-columns: 80px minmax(0, 1fr);
+		padding: 20px 16px 20px 42px;
+	}
+
+	.tuifan-entry::before {
+		left: 12px;
+		top: 21px;
+	}
+
+	.tuifan-entry__title {
+		font-size: 18px;
+	}
+
+	.tuifan-entry__bottom {
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+}
+
+.tuifan-entry__type {
+	text-transform: uppercase;
+}

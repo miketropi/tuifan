@@ -1,0 +1,45 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "tuifan/form-template",
+	"title": "Form Template",
+	"category": "tuifan",
+	"description": "Disconnected contact or newsletter form template. Nothing is sent, stored or submitted.",
+	"keywords": [ "form", "contact", "newsletter", "template", "tuifan" ],
+	"textdomain": "tuifan",
+	"supports": {
+		"html": false,
+		"anchor": true,
+		"align": [ "wide" ],
+		"color": {
+			"background": false,
+			"text": true,
+			"link": true
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true
+		}
+	},
+	"attributes": {
+		"variant": {
+			"type": "string",
+			"default": "contact",
+			"enum": [ "contact", "newsletter" ]
+		},
+		"buttonLabel": {
+			"type": "string",
+			"default": ""
+		},
+		"notice": {
+			"type": "string",
+			"default": "Template preview only. Nothing is sent or stored."
+		}
+	},
+	"style": "file:./style.css",
+	"editorScript": "file:./index.js",
+	"render": "file:./render.php"
+}

@@ -1,0 +1,14 @@
+/**
+ * tuifan/reading-time
+ */
+.wp-block-tuifan-reading-time {
+	color: var(--wp--preset--color--paragraph);
+	font-size: var(--wp--preset--font-size--small);
+	letter-spacing: 0.02em;
+}
+
+.editor-styles-wrapper .wp-block-tuifan-reading-time:empty::after {
+	color: var(--wp--preset--color--paragraph);
+	content: "Reading time — no post in context";
+	font-size: var(--wp--preset--font-size--small);
+}

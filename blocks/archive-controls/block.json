@@ -1,0 +1,29 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "tuifan/archive-controls",
+	"title": "Archive Controls",
+	"category": "tuifan",
+	"description": "Server-rendered search field and category filter links for archives and search views.",
+	"keywords": [ "search", "filter", "archive", "tuifan" ],
+	"textdomain": "tuifan",
+	"supports": {
+		"html": false,
+		"anchor": true,
+		"color": {
+			"background": false,
+			"text": true,
+			"link": true
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true
+		}
+	},
+	"style": "file:./style.css",
+	"editorScript": "file:./index.js",
+	"render": "file:./render.php"
+}

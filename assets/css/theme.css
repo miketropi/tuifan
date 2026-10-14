@@ -1,0 +1,1805 @@
+/**
+ * Tuifan — theme design layer (front end + block editor canvas).
+ *
+ * Ported from the terminal blog reference: near-black shells, IBM Plex Mono,
+ * square borders, numbered entry rows. Only WordPress preset variables are used
+ * for color, spacing and font sizes, so Global Styles stay in charge.
+ *
+ * Selector strategy: rules key off Tuifan classes (`.tuifan-*`,
+ * `.wp-block-tuifan-*`) so the same sheet styles the front end and the editor
+ * canvas. Front-end-only concerns (body class, skip link) are scoped with
+ * `.tuifan-theme`.
+ */
+
+/* ---------------------------------------------------------------------------
+ * 1. Tokens
+ * ------------------------------------------------------------------------ */
+
+:root,
+.editor-styles-wrapper {
+	--nextora-font-body: var(--wp--preset--font-family--ibm-plex-mono);
+	--nextora-font-heading: var(--nextora-font-body);
+	--tuifan-font-mono: var(--wp--preset--font-family--ibm-plex-mono);
+	--tuifan-gutter: 32px;
+	--tuifan-band-padding: 20px;
+
+	color-scheme: dark;
+}
+
+.editor-styles-wrapper {
+	--tuifan-gutter: 32px;
+}
+
+@media (max-width: 900px) {
+	:root,
+	.editor-styles-wrapper {
+		--tuifan-gutter: 24px;
+	}
+}
+
+@media (max-width: 520px) {
+	:root,
+	.editor-styles-wrapper {
+		--tuifan-gutter: 16px;
+	}
+}
+
+.tuifan-theme,
+.editor-styles-wrapper {
+	background-color: var(--wp--preset--color--base);
+	color: var(--wp--preset--color--contrast);
+	font-variant-numeric: tabular-nums;
+}
+
+.tuifan-theme {
+	overflow-x: clip;
+}
+
+.tuifan-theme ::selection,
+.editor-styles-wrapper ::selection {
+	background: var(--wp--preset--color--primary);
+	color: var(--wp--preset--color--on-accent);
+}
+
+.tuifan-theme :where(a, button, input, textarea, select),
+.editor-styles-wrapper :where(a, button, input, textarea, select) {
+	touch-action: manipulation;
+}
+
+:where(.tuifan-theme, .editor-styles-wrapper) :where(button, input, textarea, select) {
+	border-radius: 0;
+	font-family: inherit;
+}
+
+:where(.tuifan-theme, .editor-styles-wrapper) :focus-visible {
+	outline: 2px solid var(--wp--preset--color--contrast);
+	outline-offset: 4px;
+}
+
+.tuifan-icon {
+	color: inherit;
+	display: inline-block;
+	flex-shrink: 0;
+	pointer-events: none;
+	vertical-align: middle;
+}
+
+/* Front-end skip link (inserted by WordPress, styled like the reference). */
+.tuifan-theme .skip-link {
+	background: var(--wp--preset--color--contrast);
+	color: var(--wp--preset--color--base);
+	left: 24px;
+	padding: 12px;
+	position: absolute;
+	top: -100px;
+	z-index: 100;
+}
+
+.tuifan-theme .skip-link:focus,
+.tuifan-theme .skip-link:focus-visible {
+	clip-path: none;
+	height: auto;
+	margin: 0;
+	overflow: visible;
+	top: 10px;
+	width: auto;
+}
+
+/* ---------------------------------------------------------------------------
+ * 2. Shell and full-width bands
+ * ------------------------------------------------------------------------ */
+
+.wp-block-group.tuifan-shell {
+	box-sizing: border-box;
+	padding-inline: var(--tuifan-gutter);
+	width: 100%;
+}
+
+.wp-block-group.tuifan-band {
+	background-color: var(--wp--preset--color--surface);
+	border-top: 1px solid var(--wp--preset--color--border);
+	box-sizing: border-box;
+	padding-inline: var(--tuifan-band-padding);
+}
+
+/* Parent block-part inset reset: Tuifan shells own the gutters. */
+:where(.tuifan-theme, .editor-styles-wrapper) .wp-block-template-part {
+	margin-left: 0;
+	margin-right: 0;
+}
+
+/* ---------------------------------------------------------------------------
+ * 3. Header, brand and navigation
+ * ------------------------------------------------------------------------ */
+
+.wp-block-group.tuifan-header {
+	align-items: center;
+	border-bottom: 1px solid var(--wp--preset--color--border);
+	display: flex;
+	gap: 20px;
+	justify-content: space-between;
+	min-height: 90px;
+	position: relative;
+	z-index: 30;
+}
+
+.tuifan-brand {
+	align-items: center;
+	display: flex;
+	gap: 12px;
+	min-height: 44px;
+	min-width: 0;
+}
+
+.tuifan-brand .wp-block-site-title {
+	font-size: 20px;
+	font-weight: 400;
+	letter-spacing: -0.02em;
+	line-height: 1.2;
+	margin: 0;
+}
+
+.tuifan-brand .wp-block-site-title a {
+	color: inherit;
+	text-decoration: none;
+}
+
+p.tuifan-brand__mark {
+	color: var(--wp--preset--color--accent-text);
+	font-size: 20px;
+	line-height: 1;
+	margin: 0;
+}
+
+.tuifan-nav {
+	min-width: 0;
+}
+
+.tuifan-nav .wp-block-navigation__container {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.tuifan-nav .wp-block-navigation-item {
+	position: relative;
+}
+
+.tuifan-nav .wp-block-navigation-item__content {
+	align-items: center;
+	display: flex;
+	gap: 6px;
+	letter-spacing: 0.02em;
+	min-height: 44px;
+	padding: 11px 12px;
+	text-decoration: none;
+}
+
+.tuifan-nav .wp-block-navigation-item__content::before,
+.tuifan-nav .wp-block-navigation-item__content::after {
+	color: var(--wp--preset--color--paragraph);
+}
+
+.tuifan-nav .wp-block-navigation-item__content::before {
+	content: "[";
+	margin-right: 5px;
+}
+
+.tuifan-nav .wp-block-navigation-item__content::after {
+	content: "]";
+	margin-left: 5px;
+}
+
+.tuifan-nav .wp-block-navigation-item__content:hover,
+.tuifan-nav .wp-block-navigation-item__content:focus-visible {
+	background: var(--wp--preset--color--hover);
+	color: var(--wp--preset--color--contrast);
+}
+
+.tuifan-nav .current-menu-item > .wp-block-navigation-item__content,
+.tuifan-nav .current-menu-ancestor > .wp-block-navigation-item__content {
+	background: var(--wp--preset--color--contrast);
+	color: var(--wp--preset--color--base);
+}
+
+.tuifan-nav .current-menu-item > .wp-block-navigation-item__content::before,
+.tuifan-nav .current-menu-item > .wp-block-navigation-item__content::after,
+.tuifan-nav .current-menu-ancestor > .wp-block-navigation-item__content::before,
+.tuifan-nav .current-menu-ancestor > .wp-block-navigation-item__content::after {
+	color: inherit;
+}
+
+/* Decorative `/` shortcut hint next to the search link. */
+.tuifan-nav__search {
+	align-items: center;
+	display: flex;
+}
+
+.tuifan-nav__search::after {
+	border: 1px solid currentColor;
+	color: var(--wp--preset--color--paragraph);
+	content: "/";
+	font-size: 11px;
+	margin-left: 10px;
+	padding: 1px 5px;
+}
+
+/* Guides submenu: terminal directory panel. */
+.tuifan-nav .wp-block-navigation-submenu__toggle {
+	color: inherit;
+}
+
+.tuifan-nav .wp-block-navigation__submenu-container {
+	background: var(--wp--preset--color--surface);
+	border: 1px solid var(--wp--preset--color--border);
+	box-shadow: 0 12px 28px oklch(0% 0 0 / 0.35);
+	flex-direction: column;
+	gap: 0;
+	left: 0;
+	list-style: none;
+	margin: 0;
+	min-width: 260px;
+	padding: 5px 0;
+	top: 100%;
+	z-index: 40;
+}
+
+.tuifan-nav .wp-block-navigation__submenu-container .wp-block-navigation-item__content {
+	font-size: 13px;
+	letter-spacing: 0;
+	line-height: 1.5;
+	min-height: 44px;
+	padding: 10px 16px;
+	text-transform: none;
+	width: 100%;
+}
+
+.tuifan-nav .wp-block-navigation__submenu-container .wp-block-navigation-item__content::before,
+.tuifan-nav .wp-block-navigation__submenu-container .wp-block-navigation-item__content::after {
+	content: none;
+}
+
+.tuifan-nav .wp-block-navigation__submenu-container .is-tuifan-submenu-divider {
+	border-top: 1px solid var(--wp--preset--color--border);
+	margin-top: 5px;
+	padding-top: 5px;
+}
+
+/* Mobile overlay panel. */
+.tuifan-header .wp-block-navigation__responsive-container-open,
+.tuifan-header .wp-block-navigation__responsive-container-close {
+	background: var(--wp--preset--color--surface);
+	border: 1px solid var(--wp--preset--color--border);
+	color: var(--wp--preset--color--contrast);
+	font-size: 13px;
+	min-height: 44px;
+	padding: 10px 14px;
+}
+
+.tuifan-header .wp-block-navigation__responsive-container.is-menu-open {
+	background: var(--wp--preset--color--base);
+	padding: 16px var(--tuifan-gutter);
+}
+
+.tuifan-header .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation__container {
+	align-items: stretch;
+	background: var(--wp--preset--color--surface);
+	border: 1px solid var(--wp--preset--color--border);
+	flex-direction: column;
+	gap: 4px;
+	padding: 10px;
+}
+
+.tuifan-header .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation-item__content {
+	font-size: 14px;
+	min-height: 48px;
+	padding: 12px;
+}
+
+@media (max-width: 1024px) {
+	.wp-block-group.tuifan-header {
+		flex-wrap: wrap;
+		min-height: 76px;
+		padding-block: 16px;
+	}
+
+	.tuifan-nav {
+		flex: 0 0 100%;
+	}
+}
+
+/* ---------------------------------------------------------------------------
+ * 4. Breadcrumb and page heading
+ * ------------------------------------------------------------------------ */
+
+.wp-block-group.tuifan-breadcrumb {
+	border-bottom: 1px dashed var(--wp--preset--color--border);
+	color: var(--wp--preset--color--paragraph);
+	font-size: 12px;
+	letter-spacing: 0.02em;
+	padding: 22px 0;
+}
+
+.tuifan-breadcrumb a {
+	color: inherit;
+	text-decoration: underline;
+	text-underline-offset: 4px;
+}
+
+.tuifan-breadcrumb b,
+.tuifan-breadcrumb .tuifan-breadcrumb__current {
+	color: var(--wp--preset--color--contrast);
+	font-weight: 400;
+}
+
+.wp-block-group.tuifan-breadcrumb--home {
+	border-bottom: 0;
+	display: flex;
+	justify-content: space-between;
+	padding: 20px 0 0;
+}
+
+.tuifan-breadcrumb--home span {
+	font-size: 10px;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+}
+
+.wp-block-group.tuifan-page-heading {
+	padding: 40px 0 36px;
+}
+
+.tuifan-page-heading h1 {
+	font-size: clamp(32px, 4vw, 44px);
+	letter-spacing: -0.025em;
+	margin: 0;
+	max-width: 23ch;
+}
+
+p.tuifan-eyebrow {
+	color: var(--wp--preset--color--paragraph);
+	font-size: 11px;
+	letter-spacing: 0.09em;
+	margin: 0 0 20px;
+	text-transform: uppercase;
+}
+
+p.tuifan-lede {
+	color: var(--wp--preset--color--paragraph);
+	font-size: 15px;
+	line-height: 1.7;
+	margin: 0 0 20px;
+	max-width: 60ch;
+}
+
+/* ---------------------------------------------------------------------------
+ * 5. Home hero
+ * ------------------------------------------------------------------------ */
+
+.wp-block-group.tuifan-hero {
+	align-items: center;
+	border-bottom: 1px solid var(--wp--preset--color--border);
+	display: grid;
+	gap: 20px;
+	grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+	min-height: 560px;
+	overflow: visible;
+	padding: 42px 0 30px;
+	position: relative;
+}
+
+.tuifan-hero__copy {
+	min-width: 0;
+	position: relative;
+	z-index: 3;
+}
+
+.tuifan-hero .tuifan-eyebrow {
+	margin-bottom: 32px;
+}
+
+h1.tuifan-hero__title {
+	font-size: clamp(46px, 6.7vw, 112px);
+	font-weight: 300;
+	letter-spacing: -0.075em;
+	line-height: 1.04;
+	margin: 0 0 30px;
+}
+
+.tuifan-hero__title > span {
+	display: block;
+}
+
+.tuifan-signal-word {
+	color: var(--wp--preset--color--accent-text);
+}
+
+p.tuifan-hero__lede {
+	font-size: 14px;
+	margin-bottom: 24px;
+	max-width: 48ch;
+}
+
+a.tuifan-command-link {
+	align-items: center;
+	border-bottom: 1px solid var(--wp--preset--color--paragraph);
+	display: inline-flex;
+	font-size: 13px;
+	gap: 15px;
+	min-height: 48px;
+	padding: 13px 0;
+	text-decoration: none;
+}
+
+.tuifan-command-link:hover,
+.tuifan-command-link:focus-visible {
+	background: var(--wp--preset--color--hover);
+	border-color: var(--wp--preset--color--contrast);
+	color: var(--wp--preset--color--contrast);
+}
+
+.tuifan-command-link__prompt {
+	color: var(--wp--preset--color--paragraph);
+}
+
+.wp-block-group.tuifan-identity-strip {
+	align-items: center;
+	border-bottom: 1px solid var(--wp--preset--color--border);
+	color: var(--wp--preset--color--paragraph);
+	display: flex;
+	font-size: 11px;
+	gap: 16px;
+	justify-content: space-between;
+	margin-bottom: 40px;
+	padding: 17px 0;
+}
+
+.tuifan-identity-strip b {
+	color: var(--wp--preset--color--contrast);
+	font-weight: 400;
+}
+
+@media (min-width: 1600px) {
+	.tuifan-hero {
+		min-height: 650px;
+	}
+}
+
+@media (max-width: 900px) {
+	.wp-block-group.tuifan-hero {
+		grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+		min-height: 440px;
+		padding-top: 38px;
+	}
+
+	.tuifan-hero__title {
+		font-size: clamp(40px, 7vw, 64px);
+	}
+
+	.tuifan-hero .tuifan-eyebrow {
+		font-size: 10px;
+	}
+}
+
+@media (max-width: 600px) {
+	.wp-block-group.tuifan-hero {
+		gap: 12px;
+		grid-template-columns: 1fr;
+		padding-top: 32px;
+	}
+
+	.tuifan-hero__title {
+		font-size: clamp(46px, 12vw, 70px);
+	}
+
+	.tuifan-hero .tuifan-eyebrow {
+		margin-bottom: 24px;
+	}
+
+	.tuifan-breadcrumb--home span {
+		display: none;
+	}
+
+	.wp-block-group.tuifan-identity-strip {
+		flex-wrap: wrap;
+		font-size: 10px;
+		gap: 6px;
+		margin-bottom: 32px;
+	}
+}
+
+/* ---------------------------------------------------------------------------
+ * 6. Grid, sidebar and directory
+ * ------------------------------------------------------------------------ */
+
+.wp-block-group.tuifan-grid {
+	display: grid;
+	gap: 32px;
+	grid-template-columns: minmax(0, 1fr) 300px;
+	margin-bottom: 48px;
+}
+
+.tuifan-grid > * {
+	min-width: 0;
+}
+
+.tuifan-aside {
+	display: block;
+	min-width: 0;
+}
+
+.wp-block-group.tuifan-aside__box {
+	background-color: var(--wp--preset--color--surface);
+	border: 1px solid var(--wp--preset--color--border);
+	margin-bottom: 20px;
+	min-width: 0;
+}
+
+p.tuifan-aside__heading {
+	border-bottom: 1px solid var(--wp--preset--color--border);
+	color: var(--wp--preset--color--contrast);
+	font-size: 11px;
+	letter-spacing: 0.08em;
+	margin: 0;
+	padding: 11px 16px;
+	text-transform: uppercase;
+}
+
+.wp-block-group.tuifan-aside__body {
+	color: var(--wp--preset--color--paragraph);
+	font-size: 12px;
+	line-height: 1.8;
+	padding: 20px 18px;
+}
+
+.tuifan-aside__body p:last-child {
+	margin-bottom: 0;
+}
+
+.tuifan-directory {
+	padding: 8px;
+}
+
+.tuifan-directory ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.tuifan-directory li {
+	align-items: center;
+	color: var(--wp--preset--color--paragraph);
+	display: flex;
+	font-size: 11px;
+	gap: 10px;
+	justify-content: space-between;
+	min-height: 44px;
+}
+
+.tuifan-directory li a {
+	align-items: center;
+	display: flex;
+	font-size: 12px;
+	min-height: 44px;
+	padding: 10px;
+	text-decoration: none;
+	width: 100%;
+}
+
+.tuifan-directory li a::after {
+	content: "/";
+	margin-left: 2px;
+}
+
+.tuifan-directory li a:hover,
+.tuifan-directory li a:focus-visible {
+	background: var(--wp--preset--color--hover);
+	color: var(--wp--preset--color--contrast);
+}
+
+.tuifan-aside--home .tuifan-aside__box {
+	background: transparent;
+	border: 0;
+	border-top: 1px solid var(--wp--preset--color--border);
+}
+
+.tuifan-aside--home .tuifan-aside__heading {
+	border: 0;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.tuifan-aside--home .tuifan-aside__body {
+	padding: 8px 0 20px;
+}
+
+.tuifan-aside--home .tuifan-directory {
+	padding: 0;
+}
+
+.tuifan-aside--home .tuifan-directory li {
+	border-bottom: 1px dashed var(--wp--preset--color--border);
+}
+
+.tuifan-aside--home .tuifan-directory li a {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+@media (max-width: 900px) {
+	.wp-block-group.tuifan-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.tuifan-aside {
+		display: grid;
+		gap: 20px;
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.wp-block-group.tuifan-aside__box {
+		margin-bottom: 0;
+	}
+}
+
+@media (max-width: 600px) {
+	.tuifan-aside {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* ---------------------------------------------------------------------------
+ * 7. Section title, entry support, tags, media fallback, links
+ * ------------------------------------------------------------------------ */
+
+.tuifan-section-title {
+	align-items: center;
+	background-color: var(--wp--preset--color--surface);
+	border: 1px solid var(--wp--preset--color--border);
+	display: flex;
+	gap: 16px;
+	justify-content: space-between;
+	padding: 13px 18px;
+}
+
+.tuifan-section-title__heading {
+	font-size: 13px;
+	letter-spacing: 0.02em;
+	margin: 0;
+}
+
+.tuifan-section-title__count {
+	color: var(--wp--preset--color--paragraph);
+	font-size: 11px;
+}
+
+a.tuifan-tag {
+	color: inherit;
+	display: inline-block;
+	margin-right: 8px;
+	text-decoration: none;
+}
+
+.tuifan-tag::before {
+	content: "#";
+}
+
+.tuifan-tag:hover {
+	background: var(--wp--preset--color--hover);
+	color: var(--wp--preset--color--contrast);
+}
+
+.tuifan-media-fallback {
+	align-items: center;
+	aspect-ratio: 16 / 9;
+	background-color: var(--wp--preset--color--surface);
+	border: 1px dashed var(--wp--preset--color--border);
+	color: var(--wp--preset--color--paragraph);
+	display: flex;
+	flex-direction: column;
+	font-size: 11px;
+	gap: 12px;
+	justify-content: center;
+	letter-spacing: 0.08em;
+	width: 100%;
+}
+
+.tuifan-media-fallback small {
+	font-size: 10px;
+	letter-spacing: 0;
+}
+
+.tuifan-media-fallback--small {
+	aspect-ratio: 4 / 3;
+	gap: 8px;
+}
+
+.tuifan-media-fallback--small span {
+	font-size: 9px;
+	letter-spacing: 0.03em;
+	text-align: center;
+}
+
+p.tuifan-text-link {
+	align-items: center;
+	display: inline-flex;
+	font-size: 12px;
+	gap: 12px;
+	min-height: 44px;
+	text-decoration: underline;
+	text-underline-offset: 6px;
+}
+
+.tuifan-text-link:hover,
+.tuifan-text-link:focus-visible {
+	background: var(--wp--preset--color--hover);
+	color: var(--wp--preset--color--contrast);
+}
+
+/* ---------------------------------------------------------------------------
+ * 8. Pagination and empty states
+ * ------------------------------------------------------------------------ */
+
+.tuifan-pagination {
+	align-items: center;
+	border-bottom: 1px solid var(--wp--preset--color--border);
+	display: flex;
+	gap: 16px;
+	justify-content: space-between;
+	padding: 16px 0;
+}
+
+.tuifan-pagination__range {
+	color: var(--wp--preset--color--paragraph);
+	font-size: 11px;
+}
+
+.tuifan-pagination__controls {
+	align-items: center;
+	display: flex;
+	gap: 4px;
+}
+
+.tuifan-pagination__step,
+.tuifan-pagination__number {
+	align-items: center;
+	border: 1px solid transparent;
+	display: inline-flex;
+	font-size: 12px;
+	font-weight: 400;
+	justify-content: center;
+	min-height: 44px;
+	min-width: 44px;
+	padding: 8px;
+	text-decoration: none;
+}
+
+.tuifan-pagination__step:hover,
+.tuifan-pagination__number:hover {
+	background: var(--wp--preset--color--hover);
+	border-color: var(--wp--preset--color--border);
+	color: var(--wp--preset--color--contrast);
+}
+
+.tuifan-pagination__number[aria-current="page"] {
+	background: var(--wp--preset--color--surface);
+	border-color: var(--wp--preset--color--accent-text);
+	color: var(--wp--preset--color--contrast);
+}
+
+.tuifan-pagination__step.is-disabled {
+	color: var(--wp--preset--color--border);
+}
+
+.tuifan-empty {
+	border: 1px solid var(--wp--preset--color--border);
+	border-top: 0;
+	color: var(--wp--preset--color--paragraph);
+	padding: 48px 24px;
+	text-align: center;
+}
+
+.tuifan-empty h2 {
+	color: var(--wp--preset--color--contrast);
+}
+
+@media (max-width: 600px) {
+	.tuifan-pagination {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 8px;
+		padding: 14px 0;
+	}
+
+	.tuifan-pagination__controls {
+		align-self: flex-end;
+	}
+}
+
+/* ---------------------------------------------------------------------------
+ * 9. Terminal panel, notes and callouts
+ * ------------------------------------------------------------------------ */
+
+.tuifan-terminal {
+	background-color: var(--wp--preset--color--surface);
+	border: 1px solid var(--wp--preset--color--border);
+	min-width: 0;
+}
+
+.wp-block-group.tuifan-terminal__bar {
+	border-bottom: 1px solid var(--wp--preset--color--border);
+	color: var(--wp--preset--color--contrast);
+	display: flex;
+	font-size: 11px;
+	gap: 12px;
+	justify-content: space-between;
+	letter-spacing: 0.08em;
+	padding: 11px 16px;
+	text-transform: uppercase;
+}
+
+.tuifan-terminal__bar span:last-child {
+	color: var(--wp--preset--color--paragraph);
+}
+
+.tuifan-terminal pre {
+	font-family: var(--tuifan-font-mono);
+	font-size: 13px;
+	font-weight: 300;
+	line-height: 1.85;
+	margin: 0;
+	overflow-wrap: anywhere;
+	padding: 24px;
+	white-space: pre-wrap;
+}
+
+.tuifan-terminal__muted {
+	color: var(--wp--preset--color--paragraph);
+}
+
+.wp-block-group.tuifan-note {
+	border: 1px dashed var(--wp--preset--color--border);
+	color: var(--wp--preset--color--paragraph);
+	font-size: 12px;
+	line-height: 1.8;
+	margin: 24px 0;
+	padding: 20px;
+}
+
+.tuifan-note p:last-child {
+	margin-bottom: 0;
+}
+
+/* ---------------------------------------------------------------------------
+ * 10. Buttons
+ * ------------------------------------------------------------------------ */
+
+.tuifan-primary,
+.tuifan-secondary {
+	align-items: center;
+	border: 1px solid var(--wp--preset--color--border);
+	display: inline-flex;
+	font-size: 13px;
+	gap: 18px;
+	letter-spacing: 0.02em;
+	min-height: 44px;
+	padding: 12px 20px;
+	text-decoration: none;
+}
+
+.tuifan-primary {
+	background: var(--wp--preset--color--primary);
+	border-color: var(--wp--preset--color--primary);
+	color: var(--wp--preset--color--on-accent);
+	font-weight: 500;
+}
+
+.tuifan-primary:hover,
+.tuifan-primary:focus-visible {
+	background: var(--wp--preset--color--primary-hover);
+	border-color: var(--wp--preset--color--primary-hover);
+	color: var(--wp--preset--color--on-accent);
+}
+
+.tuifan-secondary {
+	background: var(--wp--preset--color--surface);
+	color: var(--wp--preset--color--contrast);
+}
+
+.tuifan-secondary:hover,
+.tuifan-secondary:focus-visible {
+	background: var(--wp--preset--color--hover);
+	color: var(--wp--preset--color--contrast);
+}
+
+/* ---------------------------------------------------------------------------
+ * 11. Footer and newsletter
+ * ------------------------------------------------------------------------ */
+
+.wp-block-group.tuifan-footer {
+	display: block;
+	padding-top: 0;
+}
+
+.wp-block-group.tuifan-newsletter {
+	border-bottom: 1px solid var(--wp--preset--color--border);
+	display: grid;
+	gap: 24px 48px;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 460px);
+	padding: 32px 0 24px;
+}
+
+.tuifan-newsletter > * {
+	min-width: 0;
+}
+
+p.tuifan-newsletter__kicker {
+	color: var(--wp--preset--color--accent-text);
+	font-size: 11px;
+	letter-spacing: 0.08em;
+	margin: 0 0 8px;
+}
+
+h2.tuifan-newsletter__heading {
+	color: var(--wp--preset--color--contrast);
+	font-family: var(--nextora-font-heading);
+	font-size: clamp(20px, 2vw, 26px);
+	font-weight: 300;
+	line-height: 1.35;
+	margin: 0 0 10px;
+}
+
+p.tuifan-newsletter__description {
+	font-size: 13px;
+	line-height: 1.7;
+	margin: 0;
+	max-width: 52ch;
+}
+
+.wp-block-group.tuifan-footer-meta {
+	align-items: center;
+	color: var(--wp--preset--color--paragraph);
+	display: flex;
+	flex-wrap: wrap;
+	font-size: 11px;
+	gap: 12px 24px;
+	justify-content: space-between;
+	letter-spacing: 0.02em;
+	padding: 12px 0 0;
+}
+
+.tuifan-footer-meta a {
+	align-items: center;
+	display: inline-flex;
+	min-height: 44px;
+}
+
+.tuifan-footer-meta a:hover,
+.tuifan-footer-meta a:focus-visible {
+	background: var(--wp--preset--color--hover);
+	color: var(--wp--preset--color--contrast);
+}
+
+.tuifan-footer-right {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+}
+
+@media (max-width: 820px) {
+	.wp-block-group.tuifan-newsletter {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 20px;
+	}
+}
+
+@media (max-width: 430px) {
+	.wp-block-group.tuifan-footer-meta {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	.wp-block-group.tuifan-footer-right {
+		gap: 12px;
+	}
+}
+
+/* ---------------------------------------------------------------------------
+ * 12. Article layout
+ * ------------------------------------------------------------------------ */
+
+.wp-block-group.tuifan-article {
+	display: grid;
+	gap: clamp(32px, 5vw, 96px);
+	grid-template-columns: minmax(0, 760px) minmax(240px, 300px);
+	justify-content: center;
+	margin-bottom: 48px;
+}
+
+.tuifan-article > * {
+	min-width: 0;
+}
+
+.tuifan-article__content {
+	min-width: 0;
+	width: 100%;
+}
+
+.tuifan-article__title {
+	max-width: 850px;
+}
+
+.wp-block-group.tuifan-article__meta {
+	color: var(--wp--preset--color--paragraph);
+	display: flex;
+	flex-wrap: wrap;
+	font-size: 12px;
+	gap: 16px;
+	margin-top: 24px;
+}
+
+.tuifan-article__feature {
+	margin: 0 0 36px;
+}
+
+.tuifan-article__feature img {
+	display: block;
+	height: auto;
+	width: 100%;
+}
+
+.tuifan-article__sidebar {
+	align-self: start;
+	max-height: calc(100dvh - 48px);
+	overflow: auto;
+}
+
+.wp-block-group.tuifan-article__end {
+	border-top: 1px solid var(--wp--preset--color--border);
+	margin-top: 48px;
+	padding-top: 24px;
+}
+
+.tuifan-article__end .tuifan-eyebrow {
+	margin: 0 0 16px;
+}
+
+.tuifan-next-article {
+	align-items: center;
+	border-bottom: 1px solid var(--wp--preset--color--border);
+	color: var(--wp--preset--color--contrast);
+	display: grid;
+	gap: 18px;
+	grid-template-columns: minmax(0, 1fr);
+	min-height: 100px;
+	padding: 12px 0 18px;
+	text-decoration: none;
+}
+
+.tuifan-next-article__meta {
+	color: var(--wp--preset--color--paragraph);
+	font-size: 11px;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+}
+
+.tuifan-next-article__title {
+	font-size: 16px;
+	line-height: 1.5;
+	margin: 6px 0 0;
+}
+
+.tuifan-next-article:hover,
+.tuifan-next-article:focus-visible {
+	background: var(--wp--preset--color--hover);
+}
+
+@media (min-width: 1000px) {
+	.tuifan-article__sidebar {
+		position: sticky;
+		top: 24px;
+	}
+}
+
+@media (max-width: 1024px) {
+	.wp-block-group.tuifan-article {
+		grid-template-columns: minmax(0, 1fr);
+		margin-left: auto;
+		margin-right: auto;
+		max-width: 760px;
+	}
+
+	.tuifan-article__sidebar {
+		grid-row: 1;
+		max-height: none;
+		overflow: visible;
+		position: static;
+	}
+}
+
+/* ---------------------------------------------------------------------------
+ * 13. Long-form typography (pages and articles)
+ * ------------------------------------------------------------------------ */
+
+.tuifan-prose,
+.tuifan-article__body {
+	display: flow-root;
+	font-size: 15px;
+	min-width: 0;
+}
+
+.tuifan-content {
+	display: flow-root;
+	min-width: 0;
+}
+
+.tuifan-prose p,
+.tuifan-prose li,
+.tuifan-article__body p,
+.tuifan-article__body li {
+	color: var(--wp--preset--color--paragraph);
+	line-height: 1.85;
+	margin: 0 0 20px;
+	max-width: 65ch;
+	overflow-wrap: break-word;
+	text-wrap: pretty;
+}
+
+.tuifan-prose h2,
+.tuifan-prose h3,
+.tuifan-prose h4,
+.tuifan-prose h5,
+.tuifan-prose h6,
+.tuifan-article__body h2,
+.tuifan-article__body h3,
+.tuifan-article__body h4,
+.tuifan-article__body h5,
+.tuifan-article__body h6 {
+	scroll-margin-top: 24px;
+}
+
+.tuifan-prose h2 {
+	margin: 36px 0 18px;
+}
+
+.tuifan-prose h2:first-child {
+	margin-top: 0;
+}
+
+.tuifan-article__body h2 {
+	font-size: clamp(23px, 2.2vw, 30px);
+	margin: 52px 0 20px;
+}
+
+.tuifan-article__body h3 {
+	font-size: 20px;
+	margin: 32px 0 16px;
+}
+
+.tuifan-prose strong,
+.tuifan-prose b,
+.tuifan-article__body strong,
+.tuifan-article__body b {
+	color: var(--wp--preset--color--contrast);
+	font-weight: 500;
+}
+
+.tuifan-prose code,
+.tuifan-prose kbd {
+	background: var(--wp--preset--color--surface);
+	color: var(--wp--preset--color--contrast);
+	font-family: var(--tuifan-font-mono);
+	font-size: 13px;
+	overflow-wrap: anywhere;
+	padding: 2px 5px;
+}
+
+/* Article inline code matches the reference: monospace text, no chip. */
+.tuifan-article__body code,
+.tuifan-article__body kbd {
+	background: transparent;
+	color: var(--wp--preset--color--contrast);
+	font-family: var(--tuifan-font-mono);
+	font-size: 13px;
+	overflow-wrap: anywhere;
+	padding: 0;
+}
+
+.tuifan-prose ul,
+.tuifan-prose ol,
+.tuifan-article__body ul,
+.tuifan-article__body ol {
+	padding-left: 24px;
+}
+
+.tuifan-prose li,
+.tuifan-article__body li {
+	margin: 12px 0;
+}
+
+.tuifan-prose blockquote,
+.tuifan-article__body blockquote {
+	background: var(--wp--preset--color--surface);
+	border: 1px solid var(--wp--preset--color--border);
+	margin: 28px 0;
+	padding: 24px;
+}
+
+.tuifan-prose blockquote p,
+.tuifan-article__body blockquote p {
+	color: var(--wp--preset--color--contrast);
+	margin: 0;
+}
+
+.tuifan-prose hr,
+.tuifan-article__body hr {
+	border: 0;
+	border-top: 1px dashed var(--wp--preset--color--border);
+	margin: 40px 0;
+}
+
+.tuifan-prose a,
+.tuifan-article__body a {
+	overflow-wrap: anywhere;
+	text-underline-offset: 4px;
+}
+
+.tuifan-prose img,
+.tuifan-article__body img {
+	display: block;
+	height: auto;
+	max-width: 100%;
+}
+
+.tuifan-prose figcaption,
+.tuifan-article__body figcaption,
+.tuifan-prose small,
+.tuifan-article__body small {
+	color: var(--wp--preset--color--paragraph);
+	font-size: 13px;
+}
+
+/* Code blocks: plain without JavaScript, framed once the copy control exists. */
+.tuifan-article__body pre.wp-block-code,
+.tuifan-prose pre.wp-block-code {
+	background: var(--wp--preset--color--surface);
+	border: 1px solid var(--wp--preset--color--border);
+	font-family: var(--tuifan-font-mono);
+	font-size: 13px;
+	font-weight: 300;
+	line-height: 1.8;
+	margin: 28px 0;
+	overflow: auto;
+	overflow-wrap: normal;
+	padding: 20px;
+	white-space: pre;
+}
+
+div.tuifan-code-block {
+	background: var(--wp--preset--color--surface);
+	border: 1px solid var(--wp--preset--color--border);
+	margin: 28px 0;
+	min-width: 0;
+}
+
+.tuifan-code-bar {
+	align-items: center;
+	border-bottom: 1px solid var(--wp--preset--color--border);
+	color: var(--wp--preset--color--paragraph);
+	display: flex;
+	font-size: 12px;
+	gap: 12px;
+	justify-content: space-between;
+	padding: 0 16px;
+}
+
+.tuifan-copy {
+	background: transparent;
+	border: 0;
+	color: var(--wp--preset--color--contrast);
+	min-height: 44px;
+	min-width: 44px;
+	padding: 8px;
+}
+
+.tuifan-copy:hover,
+.tuifan-copy:focus-visible {
+	background: var(--wp--preset--color--hover);
+}
+
+.tuifan-code-block pre.wp-block-code {
+	border: 0;
+	margin: 0;
+}
+
+.tuifan-code-status:empty {
+	display: none;
+}
+
+.tuifan-code-status {
+	color: var(--wp--preset--color--paragraph);
+	font-size: 11px;
+	margin: 0;
+	padding: 0 16px 12px;
+}
+
+/* Tables stay inside their container. */
+.tuifan-prose .wp-block-table,
+.tuifan-article__body .wp-block-table {
+	margin: 28px 0;
+	max-width: 100%;
+	overflow-x: auto;
+}
+
+.tuifan-prose table,
+.tuifan-article__body table {
+	border-collapse: collapse;
+	font-size: 13px;
+	min-width: 520px;
+	width: 100%;
+}
+
+.tuifan-prose th,
+.tuifan-prose td,
+.tuifan-article__body th,
+.tuifan-article__body td {
+	border-bottom: 1px solid var(--wp--preset--color--border);
+	border-right: 1px solid var(--wp--preset--color--border);
+	line-height: 1.7;
+	padding: 16px;
+	text-align: left;
+	vertical-align: top;
+}
+
+.tuifan-prose th,
+.tuifan-article__body th {
+	background: var(--wp--preset--color--surface);
+	color: var(--wp--preset--color--contrast);
+	font-weight: 500;
+}
+
+@media (max-width: 600px) {
+	.tuifan-article__body p,
+	.tuifan-article__body li,
+	.tuifan-prose p,
+	.tuifan-prose li {
+		font-size: 15px;
+	}
+
+	.tuifan-article__body h2 {
+		margin-top: 40px;
+	}
+
+	.tuifan-prose blockquote,
+	.tuifan-article__body blockquote {
+		padding: 18px;
+	}
+
+	.tuifan-code-bar {
+		padding: 0 12px;
+	}
+}
+
+/* ---------------------------------------------------------------------------
+ * 14. Table of contents (parent block, restyled inside the article sidebar)
+ * ------------------------------------------------------------------------ */
+
+.tuifan-article__sidebar .wp-block-nextora-table-of-contents {
+	border: 0;
+	border-bottom: 1px solid var(--wp--preset--color--border);
+	border-top: 1px solid var(--wp--preset--color--border);
+	margin-bottom: 24px;
+	max-height: none;
+	position: static;
+}
+
+.tuifan-article__sidebar .wp-block-nextora-table-of-contents .nextora-toc__title {
+	color: var(--wp--preset--color--contrast);
+	font-size: 11px;
+	letter-spacing: 0.06em;
+	margin: 0;
+	min-height: 48px;
+	text-transform: uppercase;
+}
+
+.tuifan-article__sidebar .nextora-toc__list {
+	list-style: none;
+	margin: 0;
+	padding: 0 0 12px;
+}
+
+.tuifan-article__sidebar .nextora-toc__list .nextora-toc__list {
+	border-left: 1px solid var(--wp--preset--color--border);
+	margin-left: 18px;
+	padding-left: 10px;
+}
+
+.tuifan-article__sidebar .nextora-toc__item {
+	margin: 0;
+}
+
+.tuifan-article__sidebar .nextora-toc__link {
+	align-items: center;
+	color: var(--wp--preset--color--paragraph);
+	display: flex;
+	font-size: 12px;
+	line-height: 1.45;
+	min-height: 44px;
+	padding: 8px;
+	text-decoration: none;
+}
+
+.tuifan-article__sidebar .nextora-toc__item--depth-2 .nextora-toc__link {
+	font-size: 11px;
+}
+
+.tuifan-article__sidebar .nextora-toc__link:hover,
+.tuifan-article__sidebar .nextora-toc__item.is-active > .nextora-toc__link {
+	background: var(--wp--preset--color--hover);
+	color: var(--wp--preset--color--contrast);
+}
+
+/* ---------------------------------------------------------------------------
+ * 15. 404 / error panel
+ * ------------------------------------------------------------------------ */
+
+.wp-block-group.tuifan-error {
+	margin: auto;
+	max-width: 760px;
+	padding: 48px 0 56px;
+}
+
+p.tuifan-error__number {
+	color: var(--wp--preset--color--paragraph);
+	font-size: clamp(72px, 15vw, 144px);
+	font-weight: 300;
+	letter-spacing: -0.04em;
+	line-height: 1.15;
+	margin: 16px 0 32px;
+}
+
+.tuifan-error h1 {
+	font-size: 32px;
+}
+
+.wp-block-buttons.tuifan-error__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin-top: 24px;
+}
+
+/* ---------------------------------------------------------------------------
+ * 16. Comments
+ * ------------------------------------------------------------------------ */
+
+.wp-block-group.tuifan-comments {
+	border-top: 1px solid var(--wp--preset--color--border);
+	margin-top: 40px;
+	padding-top: 24px;
+}
+
+.tuifan-comments .wp-block-comments-title {
+	font-size: 18px;
+}
+
+.tuifan-comments .wp-block-comment-template {
+	list-style: none;
+	padding-left: 0;
+}
+
+.tuifan-comments .wp-block-comment-template li {
+	list-style: none;
+}
+
+/* ---------------------------------------------------------------------------
+ * 17. Component refinements
+ * ------------------------------------------------------------------------ */
+
+/* Breadcrumb: prompt + site + trail read as one terminal line. */
+.wp-block-group.tuifan-breadcrumb {
+	align-items: baseline;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0;
+}
+
+.tuifan-breadcrumb > *,
+.tuifan-breadcrumb p {
+	margin: 0;
+}
+
+.tuifan-breadcrumb .wp-block-site-title {
+	color: var(--wp--preset--color--contrast);
+	font-size: inherit;
+	font-weight: 400;
+	letter-spacing: inherit;
+	margin: 0;
+}
+
+.tuifan-breadcrumb .wp-block-site-title a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.tuifan-breadcrumb__aside {
+	font-size: 10px;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+}
+
+.wp-block-group.tuifan-breadcrumb--home {
+	justify-content: space-between;
+}
+
+.tuifan-breadcrumb__prompt {
+	align-items: baseline;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0;
+	margin: 0;
+}
+
+/* Blog heading only labels the posts page; archives use the query title. */
+.tuifan-theme:not(.blog) .tuifan-blog-heading {
+	display: none;
+}
+
+.wp-block-group.tuifan-page-heading--inline {
+	padding: 0 0 24px;
+}
+
+.tuifan-page-heading .wp-block-post-excerpt {
+	margin: 0 0 20px;
+}
+
+.tuifan-page-heading .wp-block-post-excerpt p {
+	color: var(--wp--preset--color--paragraph);
+	font-size: 15px;
+	line-height: 1.7;
+	margin: 0;
+	max-width: 60ch;
+}
+
+/* Home grid and latest-entries variant. */
+.wp-block-group.tuifan-grid--home {
+	gap: 48px;
+	grid-template-columns: minmax(0, 1fr) 280px;
+}
+
+.tuifan-home-list .tuifan-section-title {
+	background: transparent;
+	border: 0;
+	border-bottom: 1px solid var(--wp--preset--color--border);
+	padding: 0 0 18px;
+}
+
+.tuifan-home-list .tuifan-entry,
+.tuifan-home-list .tuifan-entry:first-child {
+	border-left: 0;
+	border-right: 0;
+	border-top: 0;
+	padding-bottom: 27px;
+	padding-top: 27px;
+}
+
+.tuifan-home-list .tuifan-entry:last-child {
+	border-bottom: 0;
+}
+
+.tuifan-home-list .tuifan-entry::before {
+	top: 29px;
+}
+
+.tuifan-home-list h3.tuifan-entry__title {
+	font-size: clamp(19px, 2vw, 28px);
+	line-height: 1.35;
+}
+
+.tuifan-nav .wp-block-navigation-item__content {
+	font-size: 14px;
+}
+
+p.tuifan-view-all {
+	margin-top: 18px;
+}
+
+.tuifan-command-link-row {
+	margin: 0;
+}
+
+a.tuifan-command-link {
+	color: inherit;
+}
+
+/* Text links own their underline; the anchor keeps the paragraph colour. */
+.tuifan-text-link a {
+	color: inherit;
+	text-decoration: inherit;
+}
+
+/* Article meta separators. */
+.tuifan-article__meta > * {
+	margin: 0;
+}
+
+.tuifan-article__meta > *:not(:first-child)::before {
+	color: var(--wp--preset--color--paragraph);
+	content: "/";
+	margin-right: 16px;
+}
+
+/* Tag row under the article body. */
+.wp-block-group.tuifan-article__terms {
+	margin-top: 28px;
+}
+
+.tuifan-article__terms .wp-block-post-terms {
+	display: flex;
+	flex-wrap: wrap;
+	font-size: 11px;
+	gap: 8px;
+}
+
+.tuifan-article__terms .wp-block-post-terms a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.tuifan-article__terms .wp-block-post-terms a:hover {
+	color: var(--wp--preset--color--contrast);
+}
+
+.tuifan-article__terms .wp-block-post-terms a::before {
+	content: "#";
+}
+
+.tuifan-article__terms .wp-block-post-terms__separator {
+	display: none;
+}
+
+/* Outline button style (404 recovery). */
+.tuifan-theme .wp-block-button.is-style-outline > .wp-block-button__link {
+	background: transparent;
+	border-color: var(--wp--preset--color--border);
+	border-width: 1px;
+	color: var(--wp--preset--color--contrast);
+}
+
+.tuifan-theme .wp-block-button.is-style-outline > .wp-block-button__link:hover,
+.tuifan-theme .wp-block-button.is-style-outline > .wp-block-button__link:focus-visible {
+	background: var(--wp--preset--color--hover);
+	border-color: var(--wp--preset--color--paragraph);
+	color: var(--wp--preset--color--contrast);
+}
+
+/* Footer identity and right-hand row. */
+.tuifan-footer-meta__identity {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	min-width: 0;
+}
+
+.tuifan-footer-meta__identity .wp-block-site-title,
+.tuifan-footer-meta__identity .wp-block-site-tagline {
+	color: var(--wp--preset--color--paragraph);
+	font-size: 11px;
+	font-weight: 400;
+	letter-spacing: 0.02em;
+	margin: 0;
+}
+
+.tuifan-footer-meta__identity .wp-block-site-title a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.tuifan-footer-meta__identity .wp-block-site-tagline::before {
+	content: "/";
+	margin-right: 6px;
+}
+
+.tuifan-footer-right > * {
+	margin: 0;
+}
+
+.tuifan-terminal__bar > * {
+	margin: 0;
+}
+
+/* Editorial callouts derived from the reference aside blocks. */
+blockquote.tuifan-callout {
+	background-color: transparent;
+	border: 1px dashed var(--wp--preset--color--border);
+}
+
+/* Article lede paragraph and starter-content label. */
+p.tuifan-article__summary {
+	border-bottom: 1px solid var(--wp--preset--color--border);
+	color: var(--wp--preset--color--paragraph);
+	font-size: 16px;
+	line-height: 1.85;
+	padding-bottom: 28px;
+}
+
+p.tuifan-starter-note {
+	color: var(--wp--preset--color--paragraph);
+	font-size: 12px;
+	letter-spacing: 0.02em;
+}
+
+/* Comments keep the terminal shell typography. */
+.wp-block-group.tuifan-comment {
+	border-bottom: 1px solid var(--wp--preset--color--border);
+	padding: 20px 0;
+}
+
+.tuifan-comment .wp-block-comment-author-name,
+.tuifan-comment .wp-block-comment-date {
+	color: var(--wp--preset--color--paragraph);
+	font-size: 11px;
+}
+
+.tuifan-comments :where(input[type="text"], input[type="email"], input[type="url"], textarea) {
+	background: var(--wp--preset--color--surface);
+	border: 1px solid var(--wp--preset--color--border);
+	box-sizing: border-box;
+	color: var(--wp--preset--color--contrast);
+	font-family: inherit;
+	padding: 14px 16px;
+	width: 100%;
+}
+
+/* ---------------------------------------------------------------------------
+ * 18. Breakpoints declared last so they win over later component rules
+ * ------------------------------------------------------------------------ */
+
+@media (max-width: 900px) {
+	.wp-block-group.tuifan-grid,
+	.wp-block-group.tuifan-grid--home {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+/* ---------------------------------------------------------------------------
+ * 19. Reduced motion
+ * ------------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+	:where(.tuifan-theme, .editor-styles-wrapper) *,
+	:where(.tuifan-theme, .editor-styles-wrapper) *::before,
+	:where(.tuifan-theme, .editor-styles-wrapper) *::after {
+		scroll-behavior: auto !important;
+		transition: none !important;
+	}
+}

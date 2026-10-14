@@ -1,0 +1,45 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "tuifan/entry-list",
+	"title": "Entry List",
+	"category": "tuifan",
+	"description": "Numbered terminal entry rows from the main query or from the latest published posts.",
+	"keywords": [ "posts", "entries", "list", "archive", "tuifan" ],
+	"textdomain": "tuifan",
+	"supports": {
+		"html": false,
+		"anchor": true,
+		"align": [ "wide", "full" ],
+		"color": {
+			"background": false,
+			"text": true,
+			"link": true
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true
+		}
+	},
+	"attributes": {
+		"source": {
+			"type": "string",
+			"default": "latest",
+			"enum": [ "latest", "main" ]
+		},
+		"postsPerPage": {
+			"type": "number",
+			"default": 2
+		},
+		"heading": {
+			"type": "string",
+			"default": "~/posts — latest entries"
+		}
+	},
+	"style": "file:./style.css",
+	"editorScript": "file:./index.js",
+	"render": "file:./render.php"
+}

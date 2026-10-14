@@ -1,0 +1,104 @@
+/**
+ * tuifan/signal-visual — stage, static figure and canvas placement.
+ *
+ * Geometry follows the reference composition: the canvas overflows the stage so
+ * the lensed arcs stay visible, while the static SVG keeps the exact stage box.
+ */
+.wp-block-tuifan-signal-visual {
+	min-width: 0;
+}
+
+.tuifan-signal__stage {
+	align-self: center;
+	height: 440px;
+	isolation: isolate;
+	min-width: 0;
+	overflow: visible;
+	position: relative;
+}
+
+.tuifan-signal__stage.is-live .tuifan-signal__figure {
+	visibility: hidden;
+}
+
+.tuifan-signal__figure {
+	height: 100%;
+	inset: 0;
+	position: absolute;
+	width: 100%;
+	z-index: 0;
+}
+
+.tuifan-signal__stage canvas {
+	display: block;
+	height: calc(100% + 130px);
+	left: -160px;
+	pointer-events: none;
+	position: absolute;
+	top: -75px;
+	width: calc(100% + 160px);
+	z-index: 1;
+}
+
+.tuifan-signal__axis {
+	color: var(--wp--preset--color--paragraph);
+	font-size: 10px;
+	letter-spacing: 0.04em;
+	position: absolute;
+	right: 0;
+	text-transform: uppercase;
+	top: 8px;
+	writing-mode: vertical-rl;
+	z-index: 2;
+}
+
+.tuifan-signal__caption {
+	bottom: 14px;
+	color: var(--wp--preset--color--paragraph);
+	display: flex;
+	font-size: 10px;
+	gap: 12px;
+	justify-content: space-between;
+	left: 18px;
+	letter-spacing: 0.04em;
+	position: absolute;
+	right: 18px;
+	z-index: 2;
+}
+
+@media (max-width: 900px) {
+	.tuifan-signal__stage {
+		height: 340px;
+	}
+
+	.tuifan-signal__stage canvas {
+		height: calc(100% + 90px);
+		left: -70px;
+		top: -45px;
+		width: calc(100% + 70px);
+	}
+}
+
+@media (max-width: 600px) {
+	.tuifan-signal__stage {
+		height: 290px;
+	}
+
+	.tuifan-signal__stage canvas {
+		height: calc(100% + 64px);
+		left: -12px;
+		top: -32px;
+		width: calc(100% + 12px);
+	}
+
+	.tuifan-signal__caption {
+		left: 0;
+		right: 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.tuifan-signal__stage {
+		transition: none;
+	}
+}

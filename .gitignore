@@ -1,0 +1,10 @@
+# Development dependencies (never loaded at runtime by WordPress).
+node_modules/
+vendor/
+
+# PHPCS cache.
+.phpcs-cache
+.phpcs.cache
+
+# Local build/QA artifacts.
+*.log

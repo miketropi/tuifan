@@ -1,0 +1,113 @@
+/**
+ * tuifan/archive-controls — terminal search field and category filters.
+ */
+.wp-block-tuifan-archive-controls {
+	margin-bottom: var(--wp--preset--spacing--20);
+}
+
+.tuifan-search {
+	display: flex;
+	align-items: stretch;
+	gap: var(--wp--preset--spacing--05);
+	position: relative;
+	min-width: 0;
+}
+
+.tuifan-search__prefix {
+	align-self: center;
+	color: var(--wp--preset--color--paragraph);
+	font-size: 16px;
+	left: 18px;
+	pointer-events: none;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.tuifan-search__input {
+	background: var(--wp--preset--color--surface);
+	border: 1px solid var(--wp--preset--color--border);
+	border-radius: 0;
+	box-sizing: border-box;
+	color: var(--wp--preset--color--contrast);
+	flex: 1 1 auto;
+	font-family: inherit;
+	font-size: 16px;
+	min-height: 48px;
+	min-width: 0;
+	padding: 14px 16px 14px 44px;
+	width: 100%;
+}
+
+.tuifan-search__input::placeholder {
+	color: var(--wp--preset--color--paragraph);
+	opacity: 1;
+}
+
+.tuifan-search__input:hover {
+	border-color: var(--wp--preset--color--paragraph);
+}
+
+.tuifan-search__submit {
+	align-items: center;
+	background: var(--wp--preset--color--surface);
+	border: 1px solid var(--wp--preset--color--border);
+	border-radius: 0;
+	color: var(--wp--preset--color--contrast);
+	cursor: pointer;
+	display: inline-flex;
+	font-family: inherit;
+	font-size: 13px;
+	gap: 10px;
+	justify-content: center;
+	min-height: 48px;
+	padding: 11px 16px;
+}
+
+.tuifan-search__submit:hover {
+	background: var(--wp--preset--color--hover);
+}
+
+.tuifan-filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--wp--preset--spacing--05);
+	margin: 18px 0 0;
+}
+
+.tuifan-filter {
+	align-items: center;
+	border: 1px solid var(--wp--preset--color--border);
+	display: inline-flex;
+	font-size: 12px;
+	letter-spacing: 0.02em;
+	min-height: 44px;
+	padding: 10px 14px;
+	text-decoration: none;
+}
+
+.tuifan-filter:hover {
+	background: var(--wp--preset--color--hover);
+	color: var(--wp--preset--color--contrast);
+}
+
+.tuifan-filter.is-active,
+.tuifan-filter.is-active:hover {
+	background: var(--wp--preset--color--contrast);
+	border-color: var(--wp--preset--color--contrast);
+	color: var(--wp--preset--color--base);
+}
+
+@media (max-width: 600px) {
+	.tuifan-search {
+		flex-direction: column;
+	}
+
+	.tuifan-search__submit {
+		align-self: stretch;
+	}
+
+	.tuifan-search__submit-label {
+		display: inline;
+	}
+}

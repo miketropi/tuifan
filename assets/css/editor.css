@@ -1,0 +1,43 @@
+/**
+ * Tuifan — block editor canvas parity.
+ *
+ * Editor-only companion to `assets/css/theme.css`. Every selector is scoped to
+ * the canvas (`.editor-styles-wrapper`) or to Tuifan block classes, so nothing
+ * here can restyle the editor chrome.
+ */
+
+/* Template parts and post content never add their own gutters. */
+.editor-styles-wrapper .wp-block-template-part,
+.editor-styles-wrapper .wp-block-post-content {
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.editor-styles-wrapper .wp-block-tuifan-entry-list,
+.editor-styles-wrapper .wp-block-tuifan-archive-controls,
+.editor-styles-wrapper .wp-block-tuifan-form-template,
+.editor-styles-wrapper .wp-block-tuifan-reading-time,
+.editor-styles-wrapper .wp-block-tuifan-signal-visual {
+	min-width: 0;
+}
+
+/* Server-rendered blocks: keep the preview legible while it loads. */
+.editor-styles-wrapper .wp-block-tuifan-entry-list .components-spinner,
+.editor-styles-wrapper .wp-block-tuifan-form-template .components-spinner {
+	margin: 0 auto;
+}
+
+/* Reading time has no value outside a post context: label the empty state. */
+.editor-styles-wrapper .wp-block-tuifan-reading-time:empty {
+	color: var(--wp--preset--color--paragraph);
+	font-size: var(--wp--preset--font-size--small);
+}
+
+.editor-styles-wrapper .wp-block-tuifan-reading-time:empty::before {
+	content: "Reading time — no post in context";
+}
+
+/* Never let editor canvas content force horizontal overflow. */
+.editor-styles-wrapper .wp-block-post-content {
+	overflow-wrap: break-word;
+}

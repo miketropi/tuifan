@@ -1,0 +1,123 @@
+/**
+ * tuifan/form-template — disconnected form presentation.
+ */
+.wp-block-tuifan-form-template {
+	align-self: start;
+	max-width: 760px;
+}
+
+.tuifan-form__fields {
+	border: 1px solid var(--wp--preset--color--border);
+	display: block;
+	margin: 0;
+	min-width: 0;
+	padding: 24px;
+}
+
+.tuifan-field {
+	display: block;
+	margin-bottom: 24px;
+	min-width: 0;
+}
+
+.tuifan-field__label {
+	color: var(--wp--preset--color--contrast);
+	display: block;
+	font-size: 12px;
+	letter-spacing: 0.02em;
+	margin-bottom: 10px;
+}
+
+.tuifan-field__input {
+	background: var(--wp--preset--color--surface);
+	border: 1px solid var(--wp--preset--color--border);
+	border-radius: 0;
+	box-sizing: border-box;
+	color: var(--wp--preset--color--contrast);
+	display: block;
+	font-family: inherit;
+	font-size: 15px;
+	min-width: 0;
+	padding: 14px 16px;
+	width: 100%;
+}
+
+.tuifan-field__input--textarea {
+	min-height: 180px;
+	resize: vertical;
+}
+
+.tuifan-field__input::placeholder {
+	color: var(--wp--preset--color--paragraph);
+	opacity: 1;
+}
+
+.tuifan-field__input:disabled,
+.tuifan-form__submit:disabled {
+	cursor: not-allowed;
+	opacity: 0.5;
+}
+
+.tuifan-form__row {
+	display: flex;
+	gap: var(--wp--preset--spacing--05);
+}
+
+.tuifan-form__row .tuifan-field {
+	flex: 1 1 auto;
+	margin-bottom: 0;
+}
+
+.tuifan-form__submit {
+	align-items: center;
+	border-radius: 0;
+	cursor: pointer;
+	display: inline-flex;
+	font-family: inherit;
+	gap: 14px;
+	justify-content: center;
+	min-height: 44px;
+}
+
+.tuifan-form--contact .tuifan-form__submit {
+	margin-top: 4px;
+}
+
+.tuifan-form--newsletter .tuifan-form__row {
+	align-items: flex-end;
+}
+
+.tuifan-form--newsletter .tuifan-field__input {
+	background: var(--wp--preset--color--base);
+	font-size: 14px;
+	min-height: 48px;
+	padding: 11px 12px;
+}
+
+.tuifan-form--newsletter .tuifan-form__submit {
+	background: var(--wp--preset--color--surface);
+	border: 1px solid var(--wp--preset--color--border);
+	color: var(--wp--preset--color--contrast);
+	flex: 0 0 auto;
+	font-size: 13px;
+	min-height: 48px;
+	padding: 11px 16px;
+}
+
+.tuifan-form__notice {
+	color: var(--wp--preset--color--paragraph);
+	font-size: 11px;
+	line-height: 1.7;
+	margin: 18px 0 0;
+}
+
+@media (max-width: 520px) {
+	.tuifan-form__fields {
+		padding: 18px;
+	}
+
+	.tuifan-form__row {
+		align-items: stretch;
+		flex-direction: column;
+	}
+}

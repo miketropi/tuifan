@@ -1,0 +1,108 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+	"title": "Tuifan Terminal",
+	"settings": {
+		"color": {
+			"palette": [
+				{
+					"slug": "base",
+					"name": "Base",
+					"color": "oklch(15% 0.006 250)"
+				},
+				{
+					"slug": "surface",
+					"name": "Surface",
+					"color": "oklch(18% 0.006 250)"
+				},
+				{
+					"slug": "contrast",
+					"name": "Contrast",
+					"color": "oklch(91% 0.008 250)"
+				},
+				{
+					"slug": "paragraph",
+					"name": "Paragraph",
+					"color": "oklch(69% 0.009 250)"
+				},
+				{
+					"slug": "border",
+					"name": "Border",
+					"color": "oklch(33% 0.008 250)"
+				},
+				{
+					"slug": "primary",
+					"name": "Primary",
+					"color": "oklch(56.954575% 0.10402925 309.958017)"
+				},
+				{
+					"slug": "primary-hover",
+					"name": "Primary Hover",
+					"color": "oklch(50.954575% 0.10402925 309.958017)"
+				},
+				{
+					"slug": "accent-text",
+					"name": "Accent Text",
+					"color": "oklch(76% 0.10402925 309.958017)"
+				},
+				{
+					"slug": "on-accent",
+					"name": "On Accent",
+					"color": "oklch(100% 0 0)"
+				},
+				{
+					"slug": "hover",
+					"name": "Hover",
+					"color": "oklch(25% 0.008 250)"
+				},
+				{
+					"slug": "secondary",
+					"name": "Secondary",
+					"color": "oklch(78% 0.12 145)"
+				},
+				{
+					"slug": "warning",
+					"name": "Warning",
+					"color": "oklch(82% 0.12 85)"
+				},
+				{
+					"slug": "danger",
+					"name": "Danger",
+					"color": "oklch(78% 0.12 25)"
+				},
+				{
+					"slug": "transparent",
+					"name": "Transparent",
+					"color": "transparent"
+				}
+			],
+			"gradients": []
+		},
+		"typography": {
+			"fontFamilies": [
+				{
+					"slug": "ibm-plex-mono",
+					"name": "IBM Plex Mono",
+					"fontFamily": "\"IBM Plex Mono\", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace"
+				}
+			]
+		}
+	},
+	"styles": {
+		"typography": {
+			"fontFamily": "var(--nextora-font-body)"
+		},
+		"elements": {
+			"heading": {
+				"typography": {
+					"fontFamily": "var(--nextora-font-heading)"
+				}
+			},
+			"button": {
+				"typography": {
+					"fontFamily": "var(--nextora-font-body)"
+				}
+			}
+		}
+	}
+}
