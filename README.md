@@ -2,6 +2,8 @@
 
 Tuifan is a Gutenberg block theme for WordPress, built as a child of the [Nextora](https://beplusthemes.com/) parent theme. It renders a terminal / reader-guide aesthetic on a near-black shell: IBM Plex Mono typography, numbered entry rows, OKLCH design tokens, and five dynamic blocks (`tuifan/*`) that render entirely on the server. All layout and colour decisions live in `theme.json` and the design layer in `assets/css/theme.css`, so blocks stay thin and the site works without JavaScript. Forms are presentational by design, and the starter content is installed only on demand through WP-CLI.
 
+![Tuifan home page: terminal shell with the “less noise. more signal.” hero, the lensed-shadow visual, numbered entry rows and the live sidebar](https://pub-0645c3b9d3674132af6b362484df0f3c.r2.dev/tuifan/preview.webp)
+
 - **Version:** 1.0.0
 - **Template:** `nextora` (child theme)
 - **Text domain:** `tuifan`
