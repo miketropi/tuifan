@@ -72,7 +72,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	gap: var(--wp--preset--spacing--05);
-	margin: 18px 0 0;
+	margin: 18px 0;
 }
 
 .tuifan-filter {
@@ -81,7 +81,6 @@
 	display: inline-flex;
 	font-size: 12px;
 	letter-spacing: 0.02em;
-	min-height: 44px;
 	padding: 10px 14px;
 	text-decoration: none;
 }

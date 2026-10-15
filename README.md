@@ -247,6 +247,7 @@ Authored in `resources/ts/site.ts`, bundled to `assets/js/site.js`, deferred, fo
 | Search autofocus | Focuses the field marked `data-tuifan-autofocus="1"` (rendered by `archive-controls` on search views) without scrolling. |
 | Code copy | Wraps each `pre.wp-block-code` inside `.tuifan-article` in a `.tuifan-code-block` bar with a Copy button and a `role="status"` live region. Copy resets the label after 1800 ms; when the Clipboard API is unavailable the status announces `Copy unavailable. Select the text to copy.` |
 | Reduced-motion table of contents | When `prefers-reduced-motion: reduce` matches, clicks on `.tuifan-article__sidebar .nextora-toc__link` are intercepted in the capture phase to jump instantly (no animation), then move focus to the target heading and update the URL hash. Visitors who have not requested reduced motion keep the parent's smooth scrolling. |
+| Active table-of-contents entry | The parent block marks its active entry with inline styles on the front end, and adds `is-active` only under `prefers-reduced-motion`, so a stylesheet cannot colour it. `installTocCurrentItem()` re-observes the headings the rendered links point at with the parent's root margin (`-10% 0px -70% 0px`) and marks the same entry with `tuifan-toc__item--current`, which carries the accent text colour in `theme.css`. The two stay in sync because both use the same margin and the same heading set; no entry is marked before the first heading enters the band. |
 
 ## Testing & QA checklist
 

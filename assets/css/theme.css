@@ -194,7 +194,6 @@ p.tuifan-brand__mark {
 	display: flex;
 	gap: 6px;
 	letter-spacing: 0.02em;
-	min-height: 44px;
 	padding: 11px 12px;
 	text-decoration: none;
 }
@@ -378,8 +377,7 @@ p.tuifan-brand__mark {
 .tuifan-page-heading h1 {
 	font-size: clamp(32px, 4vw, 44px);
 	letter-spacing: -0.025em;
-	margin: 0;
-	max-width: 23ch;
+	margin: 0 0 0.5rem;
 }
 
 p.tuifan-eyebrow {
@@ -452,7 +450,6 @@ a.tuifan-command-link {
 	display: inline-flex;
 	font-size: 13px;
 	gap: 15px;
-	min-height: 48px;
 	padding: 13px 0;
 	text-decoration: none;
 }
@@ -606,7 +603,6 @@ p.tuifan-aside__heading {
 	align-items: center;
 	display: flex;
 	font-size: 12px;
-	min-height: 44px;
 	padding: 10px;
 	text-decoration: none;
 	width: 100%;
@@ -869,6 +865,7 @@ p.tuifan-text-link {
 }
 
 .tuifan-terminal pre {
+	border: none;
 	font-family: var(--tuifan-font-mono);
 	font-size: 13px;
 	font-weight: 300;
@@ -1039,9 +1036,9 @@ p.tuifan-newsletter__description {
 .wp-block-group.tuifan-article {
 	display: grid;
 	gap: clamp(32px, 5vw, 96px);
-	grid-template-columns: minmax(0, 760px) minmax(240px, 300px);
+	grid-template-columns: minmax(0, 1fr) minmax(240px, 300px);
 	justify-content: center;
-	margin-bottom: 48px;
+	padding-bottom: 3rem;
 }
 
 .tuifan-article > * {
@@ -1066,8 +1063,13 @@ p.tuifan-newsletter__description {
 	margin-top: 24px;
 }
 
-.tuifan-article__feature {
-	margin: 0 0 36px;
+/*
+ * WordPress global styles zero `margin-block-end` on flow-layout children
+ * (`:root :where(.is-layout-flow) > *`), so this rule carries the block class to
+ * outrank that reset instead of relying on the class name alone.
+ */
+.wp-block-group.tuifan-article__feature {
+	margin: 0 0 2.5rem;
 }
 
 .tuifan-article__feature img {
@@ -1099,7 +1101,7 @@ p.tuifan-newsletter__description {
 	display: grid;
 	gap: 18px;
 	grid-template-columns: minmax(0, 1fr);
-	min-height: 100px;
+	min-height: 1rem;
 	padding: 12px 0 18px;
 	text-decoration: none;
 }
@@ -1168,7 +1170,6 @@ p.tuifan-newsletter__description {
 	color: var(--wp--preset--color--paragraph);
 	line-height: 1.85;
 	margin: 0 0 20px;
-	max-width: 65ch;
 	overflow-wrap: break-word;
 	text-wrap: pretty;
 }
@@ -1371,8 +1372,8 @@ div.tuifan-code-block {
 .tuifan-prose td,
 .tuifan-article__body th,
 .tuifan-article__body td {
-	border-bottom: 1px solid var(--wp--preset--color--border);
-	border-right: 1px solid var(--wp--preset--color--border);
+	border-bottom: 0;
+	border-right: 0;
 	line-height: 1.7;
 	padding: 16px;
 	text-align: left;
@@ -1433,7 +1434,7 @@ div.tuifan-code-block {
 .tuifan-article__sidebar .nextora-toc__list {
 	list-style: none;
 	margin: 0;
-	padding: 0 0 12px;
+	padding: 0;
 }
 
 .tuifan-article__sidebar .nextora-toc__list .nextora-toc__list {
@@ -1443,7 +1444,14 @@ div.tuifan-code-block {
 }
 
 .tuifan-article__sidebar .nextora-toc__item {
+	border-left: 0;
 	margin: 0;
+	padding: 0;
+}
+
+.tuifan-article__sidebar .nextora-toc__item--depth-0,
+.tuifan-article__sidebar .nextora-toc__item--depth-1 {
+	padding-left: 0;
 }
 
 .tuifan-article__sidebar .nextora-toc__link {
@@ -1452,7 +1460,6 @@ div.tuifan-code-block {
 	display: flex;
 	font-size: 12px;
 	line-height: 1.45;
-	min-height: 44px;
 	padding: 8px;
 	text-decoration: none;
 }
@@ -1461,10 +1468,21 @@ div.tuifan-code-block {
 	font-size: 11px;
 }
 
-.tuifan-article__sidebar .nextora-toc__link:hover,
-.tuifan-article__sidebar .nextora-toc__item.is-active > .nextora-toc__link {
+.tuifan-article__sidebar .nextora-toc__link:hover {
 	background: var(--wp--preset--color--hover);
 	color: var(--wp--preset--color--contrast);
+}
+
+/*
+ * Active item: accent text instead of the parent theme's left-border accent.
+ * The parent marks the active item with inline styles on the front end and adds
+ * `is-active` only under `prefers-reduced-motion`, so the child script mirrors
+ * that state onto `tuifan-toc__item--current` (see `resources/ts/site.ts`).
+ */
+.tuifan-article__sidebar .nextora-toc__item.is-active > .nextora-toc__link,
+.tuifan-article__sidebar .nextora-toc__item.tuifan-toc__item--current > .nextora-toc__link {
+	background: var(--wp--preset--color--hover);
+	color: var(--wp--preset--color--accent-text);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1692,6 +1710,7 @@ a.tuifan-command-link {
 	border-color: var(--wp--preset--color--border);
 	border-width: 1px;
 	color: var(--wp--preset--color--contrast);
+	padding: calc(0.667em + 2px) calc(1.333em + 2px);
 }
 
 .tuifan-theme .wp-block-button.is-style-outline > .wp-block-button__link:hover,
@@ -1760,14 +1779,34 @@ p.tuifan-starter-note {
 
 /* Comments keep the terminal shell typography. */
 .wp-block-group.tuifan-comment {
-	border-bottom: 1px solid var(--wp--preset--color--border);
 	padding: 20px 0;
+}
+
+/*
+ * Scoped to `.tuifan-comment` because WordPress global styles zero
+ * `margin-block` on flow-layout children (`:root :where(.is-layout-flow) > *`),
+ * which a bare `.wp-block-comment-content` selector ties with and loses to on
+ * load order. `border-width` must follow the `border` shorthand.
+ */
+.tuifan-comment .wp-block-comment-content {
+	border: solid;
+	border-width: 1px 0;
+	margin: 1rem 0;
+	padding: 1rem 0;
 }
 
 .tuifan-comment .wp-block-comment-author-name,
 .tuifan-comment .wp-block-comment-date {
 	color: var(--wp--preset--color--paragraph);
 	font-size: 11px;
+}
+
+.wp-block-comment-reply-link {
+	text-align: right;
+}
+
+.comment-reply-link {
+	font-size: 0.8rem;
 }
 
 .tuifan-comments :where(input[type="text"], input[type="email"], input[type="url"], textarea) {

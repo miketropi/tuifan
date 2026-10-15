@@ -431,7 +431,7 @@
 				"border": {
 					"width": "1px",
 					"style": "solid",
-					"color": "var(--wp--preset--color--border)"
+					"color": "initial"
 				}
 			}
 		},

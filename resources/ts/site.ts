@@ -11,6 +11,11 @@ const SEARCH_LINK_SELECTOR = '[data-tuifan-search-link], .tuifan-nav__search a';
 const SEARCH_AUTOFOCUS_SELECTOR = '[data-tuifan-autofocus="1"]';
 const ARTICLE_SELECTOR = '.tuifan-article';
 const CODE_SELECTOR = 'pre.wp-block-code';
+const TOC_LINK_SELECTOR = '.tuifan-article__sidebar .nextora-toc__link';
+const TOC_ITEM_SELECTOR = '.nextora-toc__item';
+const TOC_CURRENT_CLASS = 'tuifan-toc__item--current';
+/** Same margin as the parent block's scroll-spy, so both agree on the entry. */
+const TOC_ROOT_MARGIN = '-10% 0px -70% 0px';
 const COPY_LABEL_RESET_MS = 1800;
 const MANUAL_COPY_MESSAGE = 'Copy unavailable. Select the text to copy.';
 
@@ -187,11 +192,71 @@ function installReducedMotionToc(): void {
   );
 }
 
+/**
+ * Mirror the table-of-contents scroll-spy onto a child-owned class.
+ *
+ * The parent block marks the active item with inline styles on the front end and
+ * adds `is-active` only when reduced motion is requested, so a stylesheet cannot
+ * colour the active label. This marks the same entry from the headings the
+ * rendered links already point at, using the parent's root margin so both agree.
+ */
+function installTocCurrentItem(): void {
+  const headings = new Map<Element, HTMLElement>();
+
+  for (const link of document.querySelectorAll<HTMLAnchorElement>(TOC_LINK_SELECTOR)) {
+    if (link.hash.length < 2) {
+      continue;
+    }
+
+    const heading = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+    const item = link.closest<HTMLElement>(TOC_ITEM_SELECTOR);
+
+    if (heading && item) {
+      headings.set(heading, item);
+    }
+  }
+
+  if (!headings.size || 'function' !== typeof IntersectionObserver) {
+    return;
+  }
+
+  let current: HTMLElement | null = null;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) {
+          continue;
+        }
+
+        const item = headings.get(entry.target);
+
+        if (!item || item === current) {
+          continue;
+        }
+
+        if (current) {
+          current.classList.remove(TOC_CURRENT_CLASS);
+        }
+
+        current = item;
+        item.classList.add(TOC_CURRENT_CLASS);
+
+        return;
+      }
+    },
+    { rootMargin: TOC_ROOT_MARGIN, threshold: 0 }
+  );
+
+  headings.forEach((_item, heading) => observer.observe(heading));
+}
+
 function boot(): void {
   installSearchShortcut();
   installSearchAutofocus();
   installCodeCopy();
   installReducedMotionToc();
+  installTocCurrentItem();
 }
 
 if ('loading' === document.readyState) {
