@@ -715,7 +715,6 @@ a.tuifan-tag {
 	align-items: center;
 	aspect-ratio: 16 / 9;
 	background-color: var(--wp--preset--color--surface);
-	border: 1px dashed var(--wp--preset--color--border);
 	color: var(--wp--preset--color--paragraph);
 	display: flex;
 	flex-direction: column;
