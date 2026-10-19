@@ -96,9 +96,11 @@ WordPress scans `styles/` recursively, so all three files appear in the Site Edi
 | File | Scope |
 | --- | --- |
 | `assets/css/theme.css` | Front end and block editor canvas; enqueued as `tuifan-theme` on `enqueue_block_assets` |
-| `assets/css/editor.css` | Editor canvas parity overrides; enqueued as `tuifan-editor` and registered through `add_editor_style()` |
+| `assets/css/editor.css` | Editor canvas parity overrides; enqueued as `tuifan-editor` through `enqueue_block_editor_assets` and registered through `add_editor_style()` |
 
 Both enqueue after `nextora-app` (or `global-styles`) when that handle is registered.
+
+Editor canvas width parity: the canvas renders post content, never the page template, so core caps every top-level block at `theme.json`'s `contentSize` (760px) there. `resources/ts/editor-canvas.ts` mirrors the template selected in the editor sidebar onto the canvas document element (`tuifan-canvas-template-<slug>`) and `assets/css/editor.css` widens the canvas to `wideSize` (1376px) for `page-full-width`, which is what `theme.css` does for `.tuifan-prose--wide > .tuifan-content` on the front end. Other page templates keep the canvas default (760px).
 
 ## Blocks
 
@@ -229,6 +231,7 @@ Build outputs:
 | `blocks/<slug>/index.tsx` | `blocks/<slug>/index.js` + `index.asset.php` |
 | `blocks/<slug>/view.ts` | `blocks/<slug>/view.js` + `view.asset.php` |
 | `resources/ts/site.ts` | `assets/js/site.js` |
+| `resources/ts/editor-canvas.ts` | `assets/js/editor-canvas.js` (admin only, enqueued on `enqueue_block_editor_assets`) |
 
 Build behaviour:
 

@@ -124,6 +124,35 @@ function tuifan_enqueue_editor_style(): void {
 add_action( 'enqueue_block_editor_assets', 'tuifan_enqueue_editor_style', 30 );
 
 /**
+ * Enqueue the admin-only canvas parity script.
+ *
+ * The block editor canvas renders post content, never the page template, so the
+ * script mirrors the edited `template` attribute onto the canvas document as
+ * `tuifan-canvas-template-<slug>`; `assets/css/editor.css` then widens the
+ * canvas for `page-full-width`, matching what `theme.css` does for
+ * `.tuifan-prose--wide` on the front end.
+ */
+function tuifan_enqueue_editor_canvas_script(): void {
+	$asset = tuifan_asset( '/assets/js/editor-canvas.js' );
+
+	if ( null === $asset ) {
+		return;
+	}
+
+	wp_enqueue_script(
+		'tuifan-editor-canvas',
+		TUIFAN_URI . '/assets/js/editor-canvas.js',
+		array(),
+		$asset['version'],
+		array(
+			'in_footer' => true,
+			'strategy'  => 'defer',
+		)
+	);
+}
+add_action( 'enqueue_block_editor_assets', 'tuifan_enqueue_editor_canvas_script', 30 );
+
+/**
  * Register the editor stylesheet for the iframed canvas.
  */
 add_action(

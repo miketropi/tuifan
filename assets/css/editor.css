@@ -41,3 +41,20 @@
 .editor-styles-wrapper .wp-block-post-content {
 	overflow-wrap: break-word;
 }
+
+/*
+ * Page-template width parity.
+ *
+ * Core caps the canvas to `theme.json`'s contentSize through
+ * `.block-editor-block-list__layout.is-root-container > :where(:not(.alignleft):not(.alignright):not(.alignfull))`.
+ * `resources/ts/editor-canvas.ts` mirrors the template selected in the editor
+ * sidebar onto the canvas document element (`tuifan-canvas-template-<slug>`),
+ * so the canvas can show the same content width the front end gets from
+ * `templates/page-full-width.html` (`assets/css/theme.css` raises
+ * `.tuifan-prose--wide > .tuifan-content` to wideSize).
+ */
+html.tuifan-canvas-template-page-full-width
+	.block-editor-block-list__layout.is-root-container
+	> :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
+	max-width: var(--wp--style--global--wide-size);
+}

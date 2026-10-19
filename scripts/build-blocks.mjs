@@ -114,6 +114,7 @@ const wpExternalsPlugin = {
 const editorEntryPoints = await glob('./blocks/*/index.{ts,tsx}');
 const viewEntryPoints = await glob('./blocks/*/view.ts');
 const siteEntryPoint = './resources/ts/site.ts';
+const editorCanvasEntryPoint = './resources/ts/editor-canvas.ts';
 
 if (editorEntryPoints.length === 0) {
 	console.warn('No block entry points found at ./blocks/*/index.{ts,tsx}');
@@ -177,6 +178,19 @@ const siteBuildOptions = {
 	outfile: './assets/js/site.js',
 };
 
+/** Admin-only bundle: mirrors the selected page template onto the editor canvas. */
+const editorCanvasBuildOptions = {
+	entryPoints: [editorCanvasEntryPoint],
+	bundle: true,
+	format: 'iife',
+	platform: 'browser',
+	target: 'es2020',
+	sourcemap: isWatch ? 'inline' : false,
+	minify: !isWatch,
+	logLevel: isWatch ? 'warning' : 'info',
+	outfile: './assets/js/editor-canvas.js',
+};
+
 function writeEditorAssets() {
 	editorEntryPoints.forEach((entry) => {
 		const jsFile = entry.replace(/\.tsx?$/, '.js');
@@ -231,11 +245,20 @@ if (isWatch) {
 	});
 	const viewContext = await esbuild.context({ ...viewBuildOptions, plugins: [assetWriterPlugin] });
 	const siteContext = await esbuild.context({ ...siteBuildOptions, plugins: [assetWriterPlugin] });
+	const editorCanvasContext = await esbuild.context({
+		...editorCanvasBuildOptions,
+		plugins: [assetWriterPlugin],
+	});
 
-	await Promise.all([editorContext.watch(), viewContext.watch(), siteContext.watch()]);
+	await Promise.all([
+		editorContext.watch(),
+		viewContext.watch(),
+		siteContext.watch(),
+		editorCanvasContext.watch(),
+	]);
 
 	console.log(
-		`Watching ${editorEntryPoints.length} block(s), ${viewEntryPoints.length} view bundle(s) and resources/ts/site.ts — Ctrl+C to stop`
+		`Watching ${editorEntryPoints.length} block(s), ${viewEntryPoints.length} view bundle(s), resources/ts/site.ts and resources/ts/editor-canvas.ts — Ctrl+C to stop`
 	);
 } else {
 	const result = await esbuild.build(editorBuildOptions);
@@ -261,6 +284,11 @@ if (isWatch) {
 	if (fs.existsSync(siteEntryPoint)) {
 		await esbuild.build(siteBuildOptions);
 		console.log('  ✓ assets/js/site.js');
+	}
+
+	if (fs.existsSync(editorCanvasEntryPoint)) {
+		await esbuild.build(editorCanvasBuildOptions);
+		console.log('  ✓ assets/js/editor-canvas.js');
 	}
 
 	console.log('\nBuild complete.');
