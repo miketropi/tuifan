@@ -1163,6 +1163,16 @@ p.tuifan-newsletter__description {
 	min-width: 0;
 }
 
+/*
+ * `page-full-width.html` marks its content column `tuifan-prose--wide`.
+ * Without this rule the constrained layout of the parent group caps the post
+ * content at `contentSize` (760px), which also collapses every block-level
+ * container query inside it to its narrow branch.
+ */
+.tuifan-prose--wide > .tuifan-content {
+	max-width: var(--wp--style--global--wide-size);
+}
+
 .tuifan-prose p,
 .tuifan-prose li,
 .tuifan-article__body p,
@@ -1817,6 +1827,122 @@ p.tuifan-starter-note {
 	font-family: inherit;
 	padding: 14px 16px;
 	width: 100%;
+}
+
+/* ---------------------------------------------------------------------------
+ * 18. Extended Gutenberg sections
+ * ------------------------------------------------------------------------ */
+
+.tuifan-section,
+.tuifan-section *,
+.tuifan-section *::before,
+.tuifan-section *::after {
+	box-sizing: border-box;
+}
+
+.tuifan-section {
+	container-type: inline-size;
+	min-width: 0;
+	padding-block: clamp(88px, 10vw, 148px);
+	width: 100%;
+}
+
+.tuifan-section :where(*) {
+	min-width: 0;
+}
+
+.tuifan-section .tuifan-section__head {
+	border-bottom: 1px dashed var(--wp--preset--color--border);
+	margin: 0 24px clamp(42px, 6vw, 72px);
+	padding: 0 0 clamp(34px, 5vw, 56px);
+}
+
+.tuifan-section .tuifan-section__eyebrow,
+.tuifan-section .tuifan-section__description,
+.tuifan-section .tuifan-section__heading {
+	margin: 0;
+}
+
+.tuifan-section .tuifan-section__eyebrow {
+	color: var(--wp--preset--color--accent-text);
+	font-family: var(--tuifan-font-mono);
+	font-size: 12px;
+	letter-spacing: 0.045em;
+	line-height: 1.5;
+	text-transform: uppercase;
+}
+
+.tuifan-section .tuifan-section__heading {
+	color: var(--wp--preset--color--contrast);
+	font-size: clamp(32px, 4.5vw, 56px);
+	font-weight: 500;
+	letter-spacing: -0.052em;
+	line-height: 1.07;
+	margin-top: 16px;
+	max-width: 21ch;
+	overflow-wrap: anywhere;
+	text-wrap: balance;
+}
+
+.tuifan-section .tuifan-section__description {
+	color: var(--wp--preset--color--paragraph);
+	font-size: 15px;
+	line-height: 1.75;
+	margin-top: 22px;
+	max-width: 68ch;
+	overflow-wrap: anywhere;
+	text-wrap: pretty;
+}
+
+.tuifan-section :where(a, button, summary):focus-visible {
+	outline: 2px solid var(--wp--preset--color--primary);
+	outline-offset: 3px;
+}
+
+.tuifan-section .tuifan-section__action,
+.tuifan-section .tuifan-section__action-text {
+	align-items: center;
+	border: 1px solid var(--wp--preset--color--border);
+	color: var(--wp--preset--color--contrast);
+	display: inline-flex;
+	font-family: var(--tuifan-font-mono);
+	font-size: 12px;
+	justify-content: center;
+	line-height: 1.35;
+	min-height: 46px;
+	overflow-wrap: anywhere;
+	padding: 12px 18px;
+	text-decoration: none;
+}
+
+.tuifan-section a.tuifan-section__action:hover {
+	background: var(--wp--preset--color--hover);
+}
+
+@container (max-width: 920px) {
+	.tuifan-section .tuifan-section__head {
+		margin-inline: 0;
+	}
+}
+
+@container (max-width: 620px) {
+	.tuifan-section {
+		padding-block: 82px;
+	}
+}
+
+@supports not (container-type: inline-size) {
+	@media (max-width: 920px) {
+		.tuifan-section .tuifan-section__head {
+			margin-inline: 0;
+		}
+	}
+
+	@media (max-width: 620px) {
+		.tuifan-section {
+			padding-block: 82px;
+		}
+	}
 }
 
 /* ---------------------------------------------------------------------------

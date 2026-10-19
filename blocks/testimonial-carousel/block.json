@@ -1,0 +1,6 @@
+{
+  "$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"tuifan/testimonial-carousel","title":"Testimonial Carousel","category":"tuifan","description":"Editable quotes with progressively enhanced carousel navigation.","keywords":["testimonials","quotes","carousel","signals"],"textdomain":"tuifan",
+  "supports":{"html":false,"anchor":true,"align":["wide","full"],"color":{"background":true,"text":true},"spacing":{"margin":true,"padding":true}},
+  "attributes":{"eyebrow":{"type":"string","default":""},"heading":{"type":"string","default":""},"description":{"type":"string","default":""},"headingLevel":{"type":"number","default":2},"carouselLabel":{"type":"string","default":"Testimonials"}},
+  "style":"file:./style.css","editorScript":"file:./index.js","viewScript":"tuifan-carousel"
+}

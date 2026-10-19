@@ -349,7 +349,7 @@ $_GET['tuifan_page'] = '-5';
 tuifan_check_assert( 'a negative page parameter becomes page 1', 1 === tuifan_get_latest_page() );
 
 $_GET['tuifan_page'] = '99';
-$out_of_range = do_blocks( '<!-- wp:tuifan/entry-list {"source":"latest","postsPerPage":2} /-->' );
+$out_of_range        = do_blocks( '<!-- wp:tuifan/entry-list {"source":"latest","postsPerPage":2} /-->' );
 
 tuifan_check_assert(
 	'a page past the end offers the first-page link',
@@ -383,6 +383,323 @@ tuifan_check_assert(
 	'the footer part renders a single contentinfo landmark',
 	1 === substr_count( $footer_part_html, '<footer' ),
 	'footer elements: ' . substr_count( $footer_part_html, '<footer' )
+);
+
+// ---------------------------------------------------------------------------
+// 7. Extended-section queries and local pattern links stay public and scoped.
+// ---------------------------------------------------------------------------
+
+$section_fixture_ids = array();
+$section_term_id     = 0;
+$section_empty_id    = 0;
+$section_upload      = '';
+$section_attachment  = 0;
+$section_original    = $GLOBALS['post'] ?? null;
+
+try {
+	$section_term  = wp_insert_term( 'Tuifan carousel fixture ' . wp_generate_uuid4(), 'category' );
+	$section_empty = wp_insert_term( 'Tuifan empty fixture ' . wp_generate_uuid4(), 'category' );
+
+	if ( ! is_wp_error( $section_term ) && ! is_wp_error( $section_empty ) ) {
+		$section_term_id  = (int) $section_term['term_id'];
+		$section_empty_id = (int) $section_empty['term_id'];
+		$published        = array(
+			array( 'Zulu fixture', '2024-01-04 12:00:00' ),
+			array( 'Alpha fixture', '2024-01-03 12:00:00' ),
+			array( 'Mike fixture', '2024-01-02 12:00:00' ),
+			array( 'Echo fixture <script>alert(1)</script>', '2024-01-01 12:00:00' ),
+		);
+
+		foreach ( $published as $row ) {
+			$section_new_id = wp_insert_post(
+				array(
+					'post_type'     => 'post',
+					'post_status'   => 'publish',
+					'post_title'    => $row[0],
+					'post_excerpt'  => '<img src=x onerror=alert(1)> fixture excerpt',
+					'post_content'  => 'Fixture body.',
+					'post_date'     => $row[1],
+					'post_date_gmt' => get_gmt_from_date( $row[1] ),
+				),
+				true
+			);
+
+			if ( ! is_wp_error( $section_new_id ) ) {
+				$section_fixture_ids[] = (int) $section_new_id;
+				wp_set_post_categories( (int) $section_new_id, array( $section_term_id ) );
+			}
+		}
+
+		foreach ( array( 'draft', 'private' ) as $section_status ) {
+			$section_new_id = wp_insert_post(
+				array(
+					'post_type'    => 'post',
+					'post_status'  => $section_status,
+					'post_title'   => ucfirst( $section_status ) . ' secret fixture',
+					'post_content' => 'Secret.',
+				),
+				true
+			);
+			if ( ! is_wp_error( $section_new_id ) ) {
+				$section_fixture_ids[] = (int) $section_new_id;
+				wp_set_post_categories( (int) $section_new_id, array( $section_term_id ) );
+			}
+		}
+
+		$passworded = wp_insert_post(
+			array(
+				'post_type'     => 'post',
+				'post_status'   => 'publish',
+				'post_password' => 'secret',
+				'post_title'    => 'Password secret fixture',
+				'post_content'  => 'Secret.',
+			),
+			true
+		);
+		if ( ! is_wp_error( $passworded ) ) {
+			$section_fixture_ids[] = (int) $passworded;
+			wp_set_post_categories( (int) $passworded, array( $section_term_id ) );
+		}
+
+		$render_carousel = static function ( array $attrs ): string {
+			return do_blocks(
+				serialize_block(
+					array(
+						'blockName'    => 'tuifan/posts-carousel',
+						'attrs'        => $attrs,
+						'innerBlocks'  => array(),
+						'innerHTML'    => '',
+						'innerContent' => array(),
+					)
+				)
+			);
+		};
+
+		$date_html = $render_carousel(
+			array(
+				'categoryId'  => $section_term_id,
+				'postsToShow' => 2,
+				'orderBy'     => 'date',
+				'order'       => 'DESC',
+			)
+		);
+		tuifan_check_assert( 'posts carousel applies the requested count and date order', str_contains( $date_html, 'Zulu fixture' ) && str_contains( $date_html, 'Alpha fixture' ) && ! str_contains( $date_html, 'Mike fixture' ) );
+
+		$title_html = $render_carousel(
+			array(
+				'categoryId'  => $section_term_id,
+				'postsToShow' => 2,
+				'orderBy'     => 'title',
+				'order'       => 'ASC',
+			)
+		);
+		tuifan_check_assert( 'posts carousel applies title ASC order', strpos( $title_html, 'Alpha fixture' ) < strpos( $title_html, 'Echo fixture' ) && ! str_contains( $title_html, 'Mike fixture' ) );
+
+		$all_html = $render_carousel(
+			array(
+				'categoryId'  => $section_term_id,
+				'postsToShow' => 99,
+				'orderBy'     => 'date',
+				'order'       => 'DESC',
+			)
+		);
+		tuifan_check_assert( 'posts carousel excludes draft, private, and passworded posts', ! str_contains( $all_html, 'secret fixture' ) );
+		tuifan_check_assert( 'posts carousel escapes sensitive title and excerpt markup', ! str_contains( $all_html, '<script>' ) && ! str_contains( $all_html, '<img src=x' ) && str_contains( $all_html, '&lt;script&gt;' ) );
+		tuifan_check_assert( 'posts carousel uses intentional media fallback without a thumbnail', str_contains( $all_html, 'tuifan-media-fallback' ) );
+		$section_current_post = $GLOBALS['post'] ?? null;
+		tuifan_check_assert( 'posts carousel does not change the global post', $section_original === $section_current_post );
+
+		$empty_html = $render_carousel(
+			array(
+				'categoryId'  => $section_empty_id,
+				'postsToShow' => 4,
+			)
+		);
+		tuifan_check_assert( 'empty category renders the explicit empty state without navigation', str_contains( $empty_html, 'No entries found.' ) && ! str_contains( $empty_html, 'data-tuifan-carousel-controls' ) );
+
+		wp_delete_term( $section_empty_id, 'category' );
+		$deleted_html = $render_carousel(
+			array(
+				'categoryId'  => $section_empty_id,
+				'postsToShow' => 4,
+			)
+		);
+		tuifan_check_assert( 'deleted category does not broaden to unrelated posts', str_contains( $deleted_html, 'No entries found.' ) && ! str_contains( $deleted_html, 'Zulu fixture' ) );
+		$section_empty_id = 0;
+
+		$unknown             = tuifan_get_section_pattern_url( 'unknown' );
+		$section_archive_url = tuifan_get_posts_url();
+		tuifan_check_assert( 'unknown pattern URL kind falls back to the local archive', $unknown === $section_archive_url, $unknown );
+		tuifan_check_assert( 'missing pattern page uses a local search fallback', str_contains( tuifan_get_section_pattern_url( 'page', 'definitely-missing-tuifan-page' ), 's=definitely-missing-tuifan-page' ) );
+
+		$page_id = wp_insert_post(
+			array(
+				'post_type'   => 'page',
+				'post_status' => 'publish',
+				'post_name'   => 'tuifan-pattern-page-fixture',
+				'post_title'  => 'Pattern page fixture',
+			),
+			true
+		);
+		if ( ! is_wp_error( $page_id ) ) {
+			$section_fixture_ids[] = (int) $page_id;
+			tuifan_check_assert( 'pattern URL helper resolves a public local page', get_permalink( $page_id ) === tuifan_get_section_pattern_url( 'page', 'tuifan-pattern-page-fixture' ) );
+		}
+
+		$protected_id = wp_insert_post(
+			array(
+				'post_type'     => 'post',
+				'post_status'   => 'publish',
+				'post_name'     => 'tuifan-protected-guide',
+				'post_title'    => 'Protected pattern fixture',
+				'post_password' => 'secret',
+			),
+			true
+		);
+		if ( ! is_wp_error( $protected_id ) ) {
+			$section_fixture_ids[] = (int) $protected_id;
+			$protected_url         = tuifan_get_section_pattern_url( 'post', 'tuifan-protected-guide' );
+			parse_str( (string) wp_parse_url( $protected_url, PHP_URL_QUERY ), $protected_query );
+			tuifan_check_assert( 'pattern URL helper rejects passworded guide posts', 'tuifan protected guide' === ( $protected_query['s'] ?? '' ), $protected_url );
+		}
+	}
+} finally {
+	foreach ( array_reverse( $section_fixture_ids ) as $section_fixture_id ) {
+		wp_delete_post( $section_fixture_id, true );
+	}
+
+	if ( $section_term_id > 0 ) {
+		wp_delete_term( $section_term_id, 'category' );
+	}
+
+	if ( $section_empty_id > 0 ) {
+		wp_delete_term( $section_empty_id, 'category' );
+	}
+
+	// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- The harness deliberately restores the global post it snapshotted before rendering.
+	$GLOBALS['post'] = $section_original;
+}
+
+// ---------------------------------------------------------------------------
+// 8. Extended-section patterns keep their payload shape and local links.
+// ---------------------------------------------------------------------------
+
+$section_pattern_expectations = array(
+	'tuifan/pricing-table'        => array(
+		'block'    => 'tuifan/pricing-table',
+		'children' => 3,
+		'nested'   => 'tuifan/pricing-card',
+	),
+	'tuifan/testimonial-carousel' => array(
+		'block'    => 'tuifan/testimonial-carousel',
+		'children' => 3,
+		'nested'   => 'tuifan/testimonial-card',
+	),
+	'tuifan/team'                 => array(
+		'block'    => 'tuifan/team',
+		'children' => 3,
+		'nested'   => 'tuifan/team-card',
+	),
+	'tuifan/impact'               => array(
+		'block'    => 'tuifan/impact',
+		'children' => 3,
+		'nested'   => 'tuifan/impact-row',
+	),
+	'tuifan/tabs'                 => array(
+		'block'    => 'tuifan/tabs',
+		'children' => 3,
+		'nested'   => 'tuifan/tab-panel',
+	),
+	'tuifan/faq'                  => array(
+		'block'    => 'tuifan/faq',
+		'children' => 4,
+		'nested'   => 'core/details',
+	),
+	'tuifan/posts-carousel'       => array(
+		'block'    => 'tuifan/posts-carousel',
+		'children' => 0,
+		'nested'   => '',
+	),
+	'tuifan/cta'                  => array(
+		'block'    => 'tuifan/cta',
+		'children' => 0,
+		'nested'   => '',
+	),
+);
+
+$section_patterns = WP_Block_Patterns_Registry::get_instance();
+
+foreach ( $section_pattern_expectations as $section_slug => $section_expectation ) {
+	$section_pattern = $section_patterns->get_registered( $section_slug );
+
+	if ( ! is_array( $section_pattern ) ) {
+		tuifan_check_assert( 'pattern registered: ' . $section_slug, false, 'not registered' );
+		continue;
+	}
+
+	$section_blocks    = parse_blocks( (string) $section_pattern['content'] );
+	$section_root      = $section_blocks[0] ?? array();
+	$section_root_name = (string) ( $section_root['blockName'] ?? '' );
+
+	tuifan_check_assert(
+		'pattern ' . $section_slug . ' keeps its root block',
+		$section_expectation['block'] === $section_root_name,
+		$section_root_name
+	);
+
+	$section_children    = $section_root['innerBlocks'] ?? array();
+	$section_child_count = count( $section_children );
+
+	tuifan_check_assert(
+		'pattern ' . $section_slug . ' keeps its children',
+		$section_expectation['children'] === $section_child_count,
+		'children: ' . $section_child_count
+	);
+
+	if ( '' !== $section_expectation['nested'] ) {
+		$section_nested_ok = true;
+
+		foreach ( $section_children as $section_child ) {
+			$section_child_name = (string) ( $section_child['blockName'] ?? '' );
+
+			if ( $section_expectation['nested'] !== $section_child_name ) {
+				$section_nested_ok = false;
+			}
+		}
+
+		tuifan_check_assert(
+			'pattern ' . $section_slug . ' nests ' . $section_expectation['nested'],
+			$section_nested_ok
+		);
+	}
+
+	$section_default_class = 'wp-block-' . str_replace( '/', '-', $section_slug );
+	$section_rendered      = do_blocks( (string) $section_pattern['content'] );
+	$section_class_pattern = '/class="[^"]*\b' . preg_quote( $section_default_class, '/' ) . '\b/';
+
+	tuifan_check_assert(
+		'pattern ' . $section_slug . ' renders its own default class',
+		1 === preg_match( $section_class_pattern, $section_rendered ),
+		$section_default_class
+	);
+
+	tuifan_check_assert(
+		'pattern ' . $section_slug . ' stays in the tuifan category',
+		in_array( 'tuifan', (array) $section_pattern['categories'], true )
+	);
+}
+
+$section_pricing  = $section_patterns->get_registered( 'tuifan/pricing-table' );
+$section_li_count = 0;
+
+foreach ( parse_blocks( (string) $section_pricing['content'] )[0]['innerBlocks'] as $section_card ) {
+	$section_li_count += substr_count( serialize_block( $section_card ), '<!-- wp:list-item' );
+}
+
+tuifan_check_assert(
+	'pricing pattern keeps every feature list item',
+	9 === $section_li_count,
+	'list items: ' . $section_li_count
 );
 
 // ---------------------------------------------------------------------------

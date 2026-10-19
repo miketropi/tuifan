@@ -1,0 +1,25 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "tuifan/pricing-table",
+  "title": "Pricing Table",
+  "category": "tuifan",
+  "description": "Editable pricing or reader-path cards.",
+  "keywords": ["pricing", "plans", "cards", "paths"],
+  "textdomain": "tuifan",
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "align": ["wide", "full"],
+    "color": {"background": true, "text": true},
+    "spacing": {"margin": true, "padding": true}
+  },
+  "attributes": {
+    "eyebrow": {"type": "string", "default": ""},
+    "heading": {"type": "string", "default": ""},
+    "description": {"type": "string", "default": ""},
+    "headingLevel": {"type": "number", "default": 2}
+  },
+  "style": "file:./style.css",
+  "editorScript": "file:./index.js"
+}

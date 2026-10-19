@@ -1,0 +1,1 @@
+import {BlockConfiguration,registerBlockType} from '@wordpress/blocks';import Edit from './edit';import save from './save';import metadata from './block.json';export type TabPanelAttributes={label:string};registerBlockType(metadata as BlockConfiguration<TabPanelAttributes>,{edit:Edit,save});

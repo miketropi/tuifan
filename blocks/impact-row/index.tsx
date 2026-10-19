@@ -1,0 +1,1 @@
+import {BlockConfiguration,registerBlockType} from '@wordpress/blocks';import Edit from './edit';import save from './save';import metadata from './block.json';export type ImpactRowAttributes={title:string;description:string;headingLevel:number};registerBlockType(metadata as BlockConfiguration<ImpactRowAttributes>,{edit:Edit,save});

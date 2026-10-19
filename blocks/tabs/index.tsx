@@ -1,0 +1,1 @@
+import {BlockConfiguration,registerBlockType} from '@wordpress/blocks';import Edit from './edit';import save from './save';import metadata from './block.json';export type TabsAttributes={eyebrow:string;heading:string;description:string;headingLevel:number;tabListLabel:string};registerBlockType(metadata as BlockConfiguration<TabsAttributes>,{edit:Edit,save});

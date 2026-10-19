@@ -1,0 +1,55 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "tuifan/impact",
+	"title": "Impact",
+	"category": "tuifan",
+	"description": "An editable ordered signal or outcome path.",
+	"keywords": [ "impact", "outcomes", "steps", "signals" ],
+	"textdomain": "tuifan",
+	"supports": {
+		"html": false,
+		"anchor": true,
+		"align": [ "wide", "full" ],
+		"color": {
+			"background": true,
+			"text": true
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	},
+	"attributes": {
+		"eyebrow": {
+			"type": "string",
+			"default": ""
+		},
+		"heading": {
+			"type": "string",
+			"default": ""
+		},
+		"description": {
+			"type": "string",
+			"default": ""
+		},
+		"headingLevel": {
+			"type": "number",
+			"default": 2
+		},
+		"statusLabel": {
+			"type": "string",
+			"default": ""
+		},
+		"statusSuffix": {
+			"type": "string",
+			"default": ""
+		},
+		"statusCount": {
+			"type": "number",
+			"default": 0
+		}
+	},
+	"style": "file:./style.css",
+	"editorScript": "file:./index.js"
+}

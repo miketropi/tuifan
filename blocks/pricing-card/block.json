@@ -1,0 +1,25 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "tuifan/pricing-card",
+  "title": "Pricing Card",
+  "category": "tuifan",
+  "parent": ["tuifan/pricing-table"],
+  "description": "One editable pricing or reader-path card.",
+  "textdomain": "tuifan",
+  "supports": {"html": false},
+  "attributes": {
+    "name": {"type": "string", "default": ""},
+    "price": {"type": "string", "default": ""},
+    "period": {"type": "string", "default": ""},
+    "badge": {"type": "string", "default": ""},
+    "actionLabel": {"type": "string", "default": ""},
+    "actionUrl": {"type": "string", "default": ""},
+    "previewText": {"type": "string", "default": ""},
+    "featured": {"type": "boolean", "default": false},
+    "actionMode": {"type": "string", "default": "link", "enum": ["link", "preview"]},
+    "headingLevel": {"type": "number", "default": 3}
+  },
+  "style": "file:./style.css",
+  "editorScript": "file:./index.js"
+}

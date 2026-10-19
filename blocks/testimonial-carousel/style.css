@@ -1,0 +1,118 @@
+/*
+ * Shared carousel shell. Base state is a plain native scroller: every card is
+ * reachable by touch, trackpad, wheel and keyboard without JavaScript, and the
+ * platform scrollbar is the affordance. `view.ts` marks the root
+ * `data-tuifan-carousel-ready` once it enhances it, and only then replace the
+ * scrollbar with the paired controls + live status region.
+ */
+.tuifan-carousel__viewport {
+  --tuifan-carousel-visible: 2;
+  overscroll-behavior-x: contain;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+}
+
+.tuifan-carousel__track {
+  display: flex;
+  gap: 20px;
+}
+
+.tuifan-carousel__track > .tuifan-testimonial-card {
+  flex: 0 0 calc((100% - 20px) / 2);
+  scroll-snap-align: start;
+}
+
+.tuifan-testimonials__editor-track {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tuifan-carousel__controls {
+  align-items: center;
+  display: flex;
+  gap: 14px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+.tuifan-carousel__controls[hidden] {
+  display: none;
+}
+
+.tuifan-carousel__controls button {
+  align-items: center;
+  background: var(--wp--preset--color--surface);
+  border: 1px solid var(--wp--preset--color--border);
+  color: var(--wp--preset--color--contrast);
+  display: inline-flex;
+  font: inherit;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.tuifan-carousel__controls button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.tuifan-carousel__status {
+  font-family: var(--tuifan-font-mono);
+  font-size: 12px;
+  min-width: 9ch;
+  text-align: center;
+}
+
+/*
+ * Enhanced: the controls above the fold carry the affordance, so the scrollbar
+ * itself is not painted (it would otherwise fade in over the cards on every
+ * programmatic scroll). Scrolling stays native — wheel, trackpad, touch and
+ * keyboard all keep working.
+ */
+[data-tuifan-carousel][data-tuifan-carousel-ready="true"] .tuifan-carousel__viewport {
+  scrollbar-width: none;
+}
+
+[data-tuifan-carousel][data-tuifan-carousel-ready="true"] .tuifan-carousel__viewport::-webkit-scrollbar {
+  display: none;
+  height: 0;
+  width: 0;
+}
+
+@container (max-width: 920px) {
+  .tuifan-carousel__viewport {
+    --tuifan-carousel-visible: 1;
+  }
+
+  .tuifan-carousel__track > .tuifan-testimonial-card {
+    flex-basis: 100%;
+  }
+
+  .tuifan-testimonials__editor-track {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@supports not (container-type: inline-size) {
+  @media (max-width: 920px) {
+    .tuifan-carousel__viewport {
+      --tuifan-carousel-visible: 1;
+    }
+
+    .tuifan-carousel__track > .tuifan-testimonial-card {
+      flex-basis: 100%;
+    }
+
+    .tuifan-testimonials__editor-track {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tuifan-carousel__viewport {
+    scroll-behavior: auto;
+  }
+}

@@ -1,0 +1,181 @@
+.tuifan-tabs {
+  container-type: inline-size;
+}
+
+/*
+ * The orientation flag lives on a descendant: an element cannot be styled by
+ * its own container query, so `--tuifan-tabs-orientation` must sit below the
+ * `.tuifan-tabs` container for the stacked branch to apply.
+ */
+.tuifan-tabs .tuifan-tabs__panels {
+  --tuifan-tabs-orientation: horizontal;
+}
+
+.tuifan-tabs__tablist {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.tuifan-tabs__tab {
+  background: var(--wp--preset--color--contrast);
+  border: 1px solid var(--wp--preset--color--border);
+  color: var(--wp--preset--color--base);
+  font-family: var(--tuifan-font-mono);
+  min-height: 56px;
+  padding: 12px 18px;
+  text-align: left;
+}
+
+.tuifan-tabs__tab[aria-selected="true"] {
+  background: var(--wp--preset--color--base);
+  color: var(--wp--preset--color--contrast);
+}
+
+.tuifan-tabs__panels {
+  border: 1px solid var(--wp--preset--color--border);
+  border-top: 0;
+}
+
+.tuifan-tabs__panel[hidden] {
+  display: none;
+}
+
+.tuifan-tabs__panel-label {
+  border-bottom: 1px dashed var(--wp--preset--color--border);
+  color: var(--wp--preset--color--accent-text);
+  font-family: var(--tuifan-font-mono);
+  font-size: 12px;
+  margin: 0;
+  padding: 18px 24px;
+}
+
+/* Once the tablist exists the panel label lives in the tab button. */
+.tuifan-tabs.is-enhanced .tuifan-tabs__panel-label {
+  display: none;
+}
+
+/* Panel body: copy stack followed by the terminal block at every width. */
+.tuifan-tabs .tuifan-tab-panel__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0 0 clamp(26px, 4vw, 40px);
+}
+
+.tuifan-tabs .tuifan-tab-panel__copy > * {
+  margin: 0;
+}
+
+.tuifan-tabs .tuifan-tab-panel__kicker {
+  color: var(--wp--preset--color--accent-text);
+  font-family: var(--tuifan-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.tuifan-tabs .tuifan-tab-panel__copy .wp-block-heading {
+  color: var(--wp--preset--color--contrast);
+  font-size: clamp(24px, 3vw, 34px);
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.tuifan-tabs .tuifan-tab-panel__copy p {
+  color: var(--wp--preset--color--paragraph);
+  line-height: 1.75;
+}
+
+.tuifan-tabs .tuifan-tab-panel__copy .wp-block-button__link {
+  align-items: center;
+  background: none;
+  border: 1px solid var(--wp--preset--color--border);
+  color: var(--wp--preset--color--contrast);
+  display: inline-flex;
+  font-family: var(--tuifan-font-mono);
+  font-size: 12px;
+  min-height: 46px;
+  overflow-wrap: anywhere;
+  padding: 12px 18px;
+  text-decoration: none;
+}
+
+.tuifan-tabs .tuifan-tab-panel__copy .wp-block-button__link:hover {
+  background: var(--wp--preset--color--hover);
+}
+
+.tuifan-tabs .tuifan-terminal {
+  background: var(--wp--preset--color--surface);
+  border: 1px solid var(--wp--preset--color--border);
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 20px 22px;
+}
+
+.tuifan-tabs .tuifan-terminal > * {
+  margin: 0;
+}
+
+.tuifan-tabs .tuifan-terminal p {
+  color: var(--wp--preset--color--paragraph);
+  font-family: var(--tuifan-font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.tuifan-tabs .tuifan-terminal strong {
+  color: var(--wp--preset--color--contrast);
+}
+
+.tuifan-tabs .tuifan-terminal .tuifan-terminal__status {
+  color: var(--wp--preset--color--accent-text);
+}
+
+.tuifan-tabs .tuifan-terminal ol {
+  counter-reset: tuifan-terminal;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tuifan-tabs .tuifan-terminal li {
+  border-top: 1px dashed var(--wp--preset--color--border);
+  color: var(--wp--preset--color--paragraph);
+  counter-increment: tuifan-terminal;
+  display: grid;
+  font-family: var(--tuifan-font-mono);
+  font-size: 12px;
+  gap: 12px;
+  grid-template-columns: 34px minmax(0, 1fr);
+  line-height: 1.6;
+  margin: 0;
+  padding: 9px 0;
+}
+
+.tuifan-tabs .tuifan-terminal li::before {
+  color: var(--wp--preset--color--accent-text);
+  content: counter(tuifan-terminal, decimal-leading-zero);
+}
+
+@container (max-width: 620px) {
+  .tuifan-tabs .tuifan-tabs__panels {
+    --tuifan-tabs-orientation: vertical;
+  }
+
+  .tuifan-tabs__tablist {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@supports not (container-type: inline-size) {
+  @media (max-width: 620px) {
+    .tuifan-tabs .tuifan-tabs__panels {
+      --tuifan-tabs-orientation: vertical;
+    }
+
+    .tuifan-tabs__tablist {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}

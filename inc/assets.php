@@ -35,6 +35,36 @@ function tuifan_asset( string $rel ): ?array {
 }
 
 /**
+ * Register the shared progressive carousel runtime for carousel blocks.
+ */
+function tuifan_register_carousel_script(): void {
+	$script = tuifan_asset( '/blocks/testimonial-carousel/view.js' );
+	$asset  = TUIFAN_DIR . '/blocks/testimonial-carousel/view.asset.php';
+
+	if ( null === $script || ! is_readable( $asset ) ) {
+		return;
+	}
+
+	$metadata = require $asset;
+
+	if ( ! is_array( $metadata ) ) {
+		return;
+	}
+
+	wp_register_script(
+		'tuifan-carousel',
+		TUIFAN_URI . '/blocks/testimonial-carousel/view.js',
+		isset( $metadata['dependencies'] ) && is_array( $metadata['dependencies'] ) ? $metadata['dependencies'] : array(),
+		isset( $metadata['version'] ) ? (string) $metadata['version'] : $script['version'],
+		array(
+			'in_footer' => true,
+			'strategy'  => 'defer',
+		)
+	);
+}
+add_action( 'init', 'tuifan_register_carousel_script', 9 );
+
+/**
  * Style handles the child sheet must load after.
  *
  * @return list<string>

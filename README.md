@@ -102,7 +102,9 @@ Both enqueue after `nextora-app` (or `global-styles`) when that handle is regist
 
 ## Blocks
 
-All five blocks are dynamic (`render.php`), prefix `tuifan/`, category **Tuifan Blocks** (`tuifan` category added via `block_categories_all`). Sources live in `blocks/<slug>/` with `block.json`, `index.tsx`, `edit.tsx`, `render.php`, `style.css` (plus `view.ts` for the signal visual).
+All blocks use prefix `tuifan/` and the **Tuifan Blocks** inserter category (`tuifan`, added via `block_categories_all`). Sources live in `blocks/<slug>/` with `block.json`, `index.tsx`, `edit.tsx`, `style.css`, plus `render.php` for blocks that need a server query and `view.ts` for front-end enhancement.
+
+The five original blocks are dynamic (`render.php`):
 
 | Block | Purpose | Key attributes |
 | --- | --- | --- |
@@ -111,6 +113,27 @@ All five blocks are dynamic (`render.php`), prefix `tuifan/`, category **Tuifan 
 | `tuifan/reading-time` | Computed reading time in minutes for the post in block context | none; reads `postId` / `postType` via `usesContext` |
 | `tuifan/signal-visual` | Static SVG lensed-shadow composition, enhanced by a local Three.js ray-bending canvas | `label` (string, default `Accretion field`), `enableMotion` (boolean, default `true`) |
 | `tuifan/form-template` | Presentation-only contact/newsletter template | `variant` (`contact` \| `newsletter`, default `contact`), `buttonLabel` (string, default empty), `notice` (string, default `Template preview only. Nothing is sent or stored.`) |
+
+The extended section blocks are static except `tuifan/posts-carousel`. Section blocks share `eyebrow`, `heading`, `description` and `headingLevel`, are wrapped in `.tuifan-section` (an inline-size container), and hold their items as real blocks:
+
+| Section | Item block | Notes |
+| --- | --- | --- |
+| `tuifan/pricing-table` | `tuifan/pricing-card` | Three-column bordered grid; card holds a native `core/list` (unlocked template) and either a link or a preview disclosure |
+| `tuifan/testimonial-carousel` | `tuifan/testimonial-card` | Enhanced carousel; label in `carouselLabel` |
+| `tuifan/team` | `tuifan/team-card` | Optional WP image (`imageId`/`imageUrl`/`imageAlt`/dimensions) or an editable monogram; `links` array with `label`/`url`/`icon` (`arrow` \| `about` \| `contact`) |
+| `tuifan/impact` | `tuifan/impact-row` | `<ol>`/`<li>` semantics; `statusCount` is synced by the editor from the live row count |
+| `tuifan/tabs` | `tuifan/tab-panel` | Panels hold native core blocks; upgraded to a `role="tablist"` with generated IDs |
+| `tuifan/posts-carousel` | — | Dynamic: `postsToShow` (1–12), `categoryId` (0 = all), `orderBy` (`date` \| `title`), `order` (`ASC` \| `DESC`), `carouselLabel` |
+| `tuifan/faq` | `core/details` | Native disclosures; one open per instance on the front end |
+| `tuifan/cta` | — | `buttonLabel`, `buttonUrl`, `mode` (`preview` \| `link`); preview renders a disabled button and never posts |
+
+### Shared section layer
+
+- Styling is scoped to `.tuifan-section` and its named children in `assets/css/theme.css`; layout uses `@container` queries (920px / 620px) with `@supports not (container-type: inline-size)` media fallbacks.
+- One front-end script drives both carousels: `blocks/testimonial-carousel/view.js`, registered as the `tuifan-carousel` handle in `inc/assets.php` and declared by `testimonial-carousel` and `posts-carousel` through `viewScript`. **No carousel library is used** — the runtime is vanilla TypeScript (≈2 KB built, no Swiper/GSAP/React dependency) that drives the existing native scroll container. Markup contract: `[data-tuifan-carousel]` root, focusable `[data-tuifan-carousel-viewport]` (owns `--tuifan-carousel-visible`), `[data-tuifan-carousel-track]`, `[data-tuifan-carousel-item]` cards, controls hidden until enhanced, polite `[data-tuifan-carousel-status]` range readout. No autoplay, no looping, no clones; without JavaScript the cards scroll natively and the platform scrollbar is the affordance, while the enhanced state stops painting that scrollbar (`scrollbar-width: none` on `[data-tuifan-carousel-ready="true"]`) because the paired buttons plus the live region carry it instead.
+- `blocks/tabs/view.ts` and `blocks/faq/view.ts` are only loaded when their block is on the page.
+- `resources/ts/section-url.ts` exposes `getSafeSectionUrl()`; the static block saves call it so only `http`, `https`, `mailto` and `tel` destinations (plus local relative paths and fragments) are ever serialized.
+- Pattern destinations are resolved at registration time by `tuifan_get_section_pattern_url( $kind, $slug )` in `inc/content.php` (`archive`, `category`, `page`, `post`) with a local search fallback when the target is missing or not public.
 
 ### `tuifan/entry-list`
 
@@ -155,7 +178,7 @@ No `<form>` element, no endpoint, no storage, no validation flow: every control 
 | `home.html` | posts index (blog) built from the `tuifan/archive` pattern |
 | `index.html` | fallback archive, same `tuifan/archive` pattern |
 | `page.html` | page content inside the constrained `.tuifan-prose` group |
-| `page-full-width.html` | as `page`, but the content group is `tuifan-prose--wide` with a default (unconstrained) layout |
+| `page-full-width.html` | as `page`, but the content group is `tuifan-prose--wide`, which raises the content column to `wideSize` (1376px) through `assets/css/theme.css` |
 | `search.html` | `tuifan/search` pattern: search field, category filters, `tuifan/entry-list`, `sidebar` part |
 | `single.html` | header, `tuifan/reading-time`, article body, sticky `nextora/table-of-contents` aside (`selector: .tuifan-article__body`), `comments` part, footer |
 
@@ -181,6 +204,14 @@ Category **Tuifan** (`tuifan`), registered in `inc/setup.php`.
 | `tuifan/archive` | Archive listing: contextual title, search controls, entry rows, sidebar |
 | `tuifan/search` | Search view: server-rendered search field, category filters, results, sidebar |
 | `tuifan/not-found` | 404 panel: process exit code, stderr output, recovery links |
+| `tuifan/pricing-table` | Three reader-path cards with native feature lists, one featured with a preview disclosure |
+| `tuifan/testimonial-carousel` | Editorial quotes in an accessible, non-looping carousel |
+| `tuifan/team` | Three topic cards with local category/about/contact links |
+| `tuifan/impact` | Ordered reader outcomes with a status bar |
+| `tuifan/tabs` | Field-guide tabs; each panel holds native copy, an action and a terminal block |
+| `tuifan/posts-carousel` | Dynamic reading queue rendered from real published posts |
+| `tuifan/faq` | Four native question disclosures |
+| `tuifan/cta` | Preview-only newsletter command banner, configurable as a real link |
 
 ## Build & typecheck
 

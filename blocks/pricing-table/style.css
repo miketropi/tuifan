@@ -1,0 +1,14 @@
+.tuifan-pricing .tuifan-pricing__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@container (max-width: 920px) {
+  .tuifan-pricing .tuifan-pricing__grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+@supports not (container-type: inline-size) {
+  @media (max-width: 920px) {
+    .tuifan-pricing .tuifan-pricing__grid { grid-template-columns: minmax(0, 1fr); }
+  }
+}

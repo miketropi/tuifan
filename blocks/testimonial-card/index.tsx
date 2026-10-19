@@ -1,0 +1,1 @@
+import {BlockConfiguration,registerBlockType} from '@wordpress/blocks';import Edit from './edit';import save from './save';import metadata from './block.json';export type TestimonialCardAttributes={quote:string;authorName:string;authorRole:string;tag:string};registerBlockType(metadata as BlockConfiguration<TestimonialCardAttributes>,{edit:Edit,save});

@@ -76,6 +76,74 @@ function tuifan_get_search_url( string $term = '' ): string {
 }
 
 /**
+ * Resolve a local destination used by extended-section patterns.
+ *
+ * @param string $kind Archive, category, page, or post.
+ * @param string $slug Object slug when required.
+ */
+function tuifan_get_section_pattern_url( string $kind, string $slug = '' ): string {
+	if ( 'archive' === $kind ) {
+		return tuifan_get_posts_url();
+	}
+
+	if ( 'category' === $kind ) {
+		$term = get_term_by( 'slug', $slug, 'category' );
+
+		if ( $term instanceof WP_Term ) {
+			$url = get_term_link( $term );
+
+			if ( is_string( $url ) && '' !== $url ) {
+				return $url;
+			}
+		}
+
+		$labels = array(
+			'getting-started' => __( 'getting started', 'tuifan' ),
+			'safety'          => __( 'safety', 'tuifan' ),
+			'workflows'       => __( 'workflows', 'tuifan' ),
+		);
+
+		return tuifan_get_search_url( $labels[ $slug ] ?? str_replace( '-', ' ', $slug ) );
+	}
+
+	if ( 'page' === $kind ) {
+		$page = get_page_by_path( $slug, OBJECT, 'page' );
+
+		if ( $page instanceof WP_Post && is_post_publicly_viewable( $page ) && '' === $page->post_password ) {
+			$url = get_permalink( $page );
+
+			if ( is_string( $url ) && '' !== $url ) {
+				return $url;
+			}
+		}
+
+		return tuifan_get_search_url( $slug );
+	}
+
+	if ( 'post' === $kind ) {
+		$post = get_page_by_path( $slug, OBJECT, 'post' );
+
+		if ( $post instanceof WP_Post && is_post_publicly_viewable( $post ) && '' === $post->post_password ) {
+			$url = get_permalink( $post );
+
+			if ( is_string( $url ) && '' !== $url ) {
+				return $url;
+			}
+		}
+
+		$terms = array(
+			'agent-permissions' => __( 'safer permissions', 'tuifan' ),
+			'agent-context'     => __( 'better context', 'tuifan' ),
+			'agent-evaluation'  => __( 'agent evaluation', 'tuifan' ),
+		);
+
+		return tuifan_get_search_url( $terms[ $slug ] ?? str_replace( '-', ' ', $slug ) );
+	}
+
+	return tuifan_get_posts_url();
+}
+
+/**
  * Remove the parent's prose hook classes from Tuifan post content.
  *
  * WordPress core gives `core/post-content` the `entry-content` wrapper class,

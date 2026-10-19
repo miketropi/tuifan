@@ -1,0 +1,189 @@
+/*
+ * Posts carousel. The viewport is a native scroller so the reading queue works
+ * without JavaScript; once `view.ts` has enhanced the root
+ * (`data-tuifan-carousel-ready`) the scrollbar is not painted and the paired
+ * controls plus the live status region carry the affordance instead.
+ */
+.tuifan-posts-carousel .tuifan-carousel__viewport {
+  --tuifan-carousel-visible: 3;
+  overscroll-behavior-x: contain;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+}
+
+[data-tuifan-carousel][data-tuifan-carousel-ready="true"] .tuifan-carousel__viewport {
+  scrollbar-width: none;
+}
+
+[data-tuifan-carousel][data-tuifan-carousel-ready="true"] .tuifan-carousel__viewport::-webkit-scrollbar {
+  display: none;
+  height: 0;
+  width: 0;
+}
+
+.tuifan-posts-carousel .tuifan-carousel__track {
+  display: flex;
+  gap: 20px;
+}
+
+.tuifan-posts-carousel .tuifan-post-card {
+  flex: 0 0 calc((100% - 40px) / 3);
+  scroll-snap-align: start;
+}
+
+.tuifan-post-card {
+  background: var(--wp--preset--color--surface);
+  border: 1px solid var(--wp--preset--color--border);
+  display: flex;
+  flex-direction: column;
+  min-height: 560px;
+}
+
+.tuifan-post-card__media {
+  aspect-ratio: 3 / 2;
+  border-bottom: 1px solid var(--wp--preset--color--border);
+  overflow: hidden;
+}
+
+.tuifan-post-card__media img {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.tuifan-post-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 24px;
+}
+
+.tuifan-post-card__meta {
+  border-bottom: 1px dashed var(--wp--preset--color--border);
+  color: var(--wp--preset--color--paragraph);
+  display: flex;
+  flex-wrap: wrap;
+  font-family: var(--tuifan-font-mono);
+  font-size: 11px;
+  gap: 8px 14px;
+  padding-bottom: 15px;
+}
+
+.tuifan-post-card .tuifan-post-card__title {
+  font-size: 21px;
+  line-height: 1.25;
+  margin: 22px 0 12px;
+}
+
+.tuifan-post-card__title a {
+  color: var(--wp--preset--color--contrast);
+}
+
+.tuifan-post-card .tuifan-post-card__excerpt {
+  color: var(--wp--preset--color--paragraph);
+  line-height: 1.65;
+  margin: 0 0 22px;
+}
+
+.tuifan-post-card__byline,
+.tuifan-post-card__tags {
+  color: var(--wp--preset--color--paragraph);
+  font-size: 12px;
+}
+
+.tuifan-post-card__tags {
+  margin: 12px 0 22px;
+}
+
+.tuifan-post-card__action {
+  margin-top: auto;
+}
+
+/*
+ * Editor preview: ServerSideRender output is a static grid, so the preview
+ * viewport must not become a scroll container (it would paint a scrollbar
+ * inside the canvas, where the shared runtime never runs).
+ */
+.tuifan-posts-carousel__preview .tuifan-carousel__viewport {
+  overflow: visible;
+}
+
+.tuifan-posts-carousel__preview .tuifan-carousel__track {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.tuifan-posts-carousel__preview .tuifan-post-card {
+  min-height: 0;
+}
+
+.tuifan-posts-carousel__preview .tuifan-carousel__controls {
+  display: none;
+}
+
+@container (max-width: 920px) {
+  .tuifan-posts-carousel .tuifan-carousel__viewport {
+    --tuifan-carousel-visible: 2;
+  }
+
+  .tuifan-posts-carousel .tuifan-post-card {
+    flex-basis: calc((100% - 20px) / 2);
+  }
+
+  .tuifan-posts-carousel__preview .tuifan-carousel__track {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container (max-width: 620px) {
+  .tuifan-posts-carousel .tuifan-carousel__viewport {
+    --tuifan-carousel-visible: 1;
+  }
+
+  .tuifan-posts-carousel .tuifan-post-card {
+    flex-basis: 100%;
+    min-height: 0;
+  }
+
+  .tuifan-posts-carousel__preview .tuifan-carousel__track {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@supports not (container-type: inline-size) {
+  @media (max-width: 920px) {
+    .tuifan-posts-carousel .tuifan-carousel__viewport {
+      --tuifan-carousel-visible: 2;
+    }
+
+    .tuifan-posts-carousel .tuifan-post-card {
+      flex-basis: calc((100% - 20px) / 2);
+    }
+
+    .tuifan-posts-carousel__preview .tuifan-carousel__track {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 620px) {
+    .tuifan-posts-carousel .tuifan-carousel__viewport {
+      --tuifan-carousel-visible: 1;
+    }
+
+    .tuifan-posts-carousel .tuifan-post-card {
+      flex-basis: 100%;
+      min-height: 0;
+    }
+
+    .tuifan-posts-carousel__preview .tuifan-carousel__track {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tuifan-posts-carousel .tuifan-carousel__viewport {
+    scroll-behavior: auto;
+  }
+}
