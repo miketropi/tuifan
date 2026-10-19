@@ -1167,9 +1167,13 @@ p.tuifan-newsletter__description {
  * `page-full-width.html` marks its content column `tuifan-prose--wide`.
  * Without this rule the constrained layout of the parent group caps the post
  * content at `contentSize` (760px), which also collapses every block-level
- * container query inside it to its narrow branch.
+ * container query inside it to its narrow branch. The auto margins centre the
+ * column once it is narrower than the shell (the parent group is not always
+ * itself capped by the constrained-layout rules, so the content column would
+ * otherwise sit against the left gutter).
  */
 .tuifan-prose--wide > .tuifan-content {
+	margin: 0 auto;
 	max-width: var(--wp--style--global--wide-size);
 }
 
